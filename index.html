@@ -19,12 +19,12 @@
         .neon-text { color: #ff0000; font-size: 2.2rem; text-shadow: 0 0 15px #ff0000; margin: 0; transition: 0.5s; }
         .sub-title { color: #444; letter-spacing: 3px; font-size: 0.7rem; margin-top: 5px; }
 
-        /* Базовая анимация для всех экранов и под-экранов */
+        /* Та самая плавная анимация */
         .screen, .vip-sub-screen { 
             display: none; 
             opacity: 0; 
             transform: translateY(15px); 
-            transition: opacity 0.3s ease, transform 0.3s ease; 
+            transition: opacity 0.4s ease, transform 0.4s ease; 
         }
         .active { 
             display: block !important; 
@@ -52,7 +52,7 @@
         input { 
             background: #151515; border: 1px solid #333; padding: 15px; color: #fff; 
             border-radius: 10px; font-family: 'Orbitron'; width: 100%; box-sizing: border-box; 
-            margin-bottom: 10px; text-align: center; outline: none;
+            margin-bottom: 10px; text-align: center; outline: none; border: 1px solid #222;
         }
 
         .action-btn { 
@@ -61,9 +61,6 @@
             cursor: pointer; text-transform: uppercase;
         }
 
-        .loader { display: none; margin: 25px auto; width: 30px; height: 30px; border: 3px solid rgba(255, 0, 0, 0.2); border-radius: 50%; border-top-color: #ff0000; animation: spin 1s infinite linear; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        
         .back-nav { color: #ff0000; font-size: 0.8rem; cursor: pointer; margin-bottom: 15px; display: inline-block; }
         .hidden { display: none !important; }
         
@@ -117,7 +114,6 @@
             <h3 style="text-align: center; color: #ff0000; margin-bottom: 20px;">ID СКАНЕР</h3>
             <input type="number" id="idInput" placeholder="ВВЕДИТЕ ID ИГРОКА...">
             <button id="checkBtn" class="action-btn" onclick="checkID()">ПРОВЕРИТЬ БАЗУ</button>
-            <div id="loader" class="loader"></div>
             <div id="check-res" style="text-align: center; margin-top: 30px; font-weight: bold; font-size: 1.1rem;"></div>
         </div>
 
@@ -179,8 +175,7 @@
 
     <script>
         const tg = window.Telegram.WebApp;
-        tg.ready();
-        tg.expand();
+        tg.ready(); tg.expand();
 
         const blackListData = [10303240, 11648545, 11702640, 12294615, 13087170, 13448940, 14208965, 14370070, 14694735, 14815745, 14991700, 15137275, 15208965, 15244365, 15330640, 15575720, 15847470, 16115965, 16319360, 16321645, 16393285, 16725560, 16952270, 17086755, 17399535, 17608000, 17732855, 17761345, 18979230, 19523695, 1993449, 21158260, 21926965, 21962895, 2662588, 3121685, 3371367, 3630468, 3822719, 3836656, 3878276, 3969698, 4002176, 4143088, 4177889, 4218556, 4266638, 4295673, 4378405, 4391082, 4410686, 4583263, 4665274, 4701070, 4704105, 4704781, 4816211, 4902420, 5040096, 5148078, 5206729, 5342294, 5287149, 5588738, 5705174, 5708535, 5752266, 5771145, 5788245, 5829270, 5844182, 5943167, 5947027, 5982489, 5987309, 5991183, 6027602, 6027207, 6030137, 6085692, 6092722, 6116862, 6117188, 6142792, 6155858, 6166546, 6195747, 6220279, 6238684, 6239624, 6273994, 6517659, 6569708, 6614274, 6645546, 6670243, 6706810, 6710212, 6745226, 6794424, 6892904, 6894117, 6917475, 6968280, 7076535, 7079048, 7087225, 7099198, 7186705, 7255114, 7369019, 7421627, 7411344, 7422590, 7474480, 7486355, 7534127, 7563550, 7583887, 7631943, 7728115, 7818211, 7843225, 7910826, 7910926, 7954364, 8085601, 8164037, 8208990, 8278910, 8295931, 8313783, 8325737, 8331639, 8343285, 8364791, 8396294, 8419988, 8535478, 8545833, 8741924, 8888564, 8969060, 8969584, 9003628, 9117736, 9775550, 9802790, 2819306];
 
@@ -193,11 +188,18 @@
             const backBtn = document.getElementById('ui-back');
 
             if (current) {
-                current.classList.remove('active');
+                current.style.opacity = "0";
+                current.style.transform = "translateY(15px)";
             }
 
             setTimeout(() => {
+                if (current) current.classList.remove('active');
                 next.classList.add('active');
+                setTimeout(() => {
+                    next.style.opacity = "1";
+                    next.style.transform = "translateY(0)";
+                }, 50);
+
                 if (screenId === 'main-menu') {
                     backBtn.classList.add('hidden');
                     tg.BackButton.hide();
@@ -205,15 +207,12 @@
                     backBtn.classList.remove('hidden');
                     tg.BackButton.show();
                 }
-            }, 50);
+            }, 250);
         }
 
         function goBack() {
-            if (currentActiveSub) {
-                closeVipSub();
-            } else {
-                showScreen('main-menu');
-            }
+            if (currentActiveSub) closeVipSub();
+            else showScreen('main-menu');
         }
 
         tg.BackButton.onClick(goBack);
@@ -223,38 +222,45 @@
             const currentMenu = document.querySelector('.vip-sub-screen.active');
             const nextSub = document.getElementById(subId);
 
-            currentMenu.classList.remove('active');
-            
+            currentMenu.style.opacity = "0";
+            currentMenu.style.transform = "translateY(15px)";
+
             setTimeout(() => {
+                currentMenu.classList.remove('active');
                 nextSub.classList.add('active');
-                currentActiveSub = subId;
-            }, 150);
+                setTimeout(() => {
+                    nextSub.style.opacity = "1";
+                    nextSub.style.transform = "translateY(0)";
+                    currentActiveSub = subId;
+                }, 50);
+            }, 250);
         }
 
         function closeVipSub() {
             const currentSub = document.getElementById(currentActiveSub);
             const mainMenu = document.getElementById('vip-main-nav');
 
-            currentSub.classList.remove('active');
-            
+            currentSub.style.opacity = "0";
+            currentSub.style.transform = "translateY(15px)";
+
             setTimeout(() => {
+                currentSub.classList.remove('active');
                 mainMenu.classList.add('active');
-                currentActiveSub = null;
-            }, 150);
+                setTimeout(() => {
+                    mainMenu.style.opacity = "1";
+                    mainMenu.style.transform = "translateY(0)";
+                    currentActiveSub = null;
+                }, 50);
+            }, 250);
         }
 
         function checkID() {
             const val = document.getElementById('idInput').value;
             const res = document.getElementById('check-res');
-            const loader = document.getElementById('loader');
-            const btn = document.getElementById('checkBtn');
-
             if(!val) return;
-            res.innerHTML = ""; btn.style.display = "none"; loader.style.display = "block";
+            res.innerHTML = "ПРОЦЕСС...";
             tg.HapticFeedback.impactOccurred('medium');
-
             setTimeout(() => {
-                loader.style.display = "none"; btn.style.display = "block";
                 if(blackListData.includes(Number(val))) {
                     res.innerHTML = "<span style='color:#ff4444;'>⚠️ В ЧЕРНОМ СПИСКЕ</span>";
                     tg.HapticFeedback.notificationOccurred('error');
@@ -262,7 +268,7 @@
                     res.innerHTML = "<span style='color:#00ff00;'>✅ ИГРОК ЧИСТ</span>";
                     tg.HapticFeedback.notificationOccurred('success');
                 }
-            }, 800);
+            }, 600);
         }
 
         function tryVip() {
@@ -271,16 +277,13 @@
                 tg.HapticFeedback.notificationOccurred('success');
                 localStorage.setItem('clan_auth', 'true');
                 showScreen('main-menu');
-
                 setTimeout(() => {
                     toggleVipUI(true);
                     const vipCard = document.getElementById('vip-card-main');
                     vipCard.classList.add('auth-flash');
                     setTimeout(() => vipCard.classList.remove('auth-flash'), 700);
                 }, 300);
-            } else {
-                tg.showAlert("ОШИБКА КЛЮЧА");
-            }
+            } else { tg.showAlert("ОШИБКА КЛЮЧА"); }
         }
 
         function toggleVipUI(isVip) {
@@ -288,39 +291,25 @@
             const sub = document.getElementById('vip-sub');
             const container = document.getElementById('vip-container');
             const auth = document.getElementById('vip-auth');
-            
             if(isVip) {
-                auth.classList.add('hidden');
-                container.classList.remove('hidden');
-                label.innerText = "ROOM ALL STAR";
-                sub.innerText = "MANAGEMENT";
-                label.style.color = "#fff";
-                label.style.textShadow = "0 0 10px #fff";
+                auth.classList.add('hidden'); container.classList.remove('hidden');
+                label.innerText = "ROOM ALL STAR"; sub.innerText = "MANAGEMENT";
+                label.style.color = "#fff"; label.style.textShadow = "0 0 10px #fff";
             } else {
-                auth.classList.remove('hidden');
-                container.classList.add('hidden');
-                label.innerText = "VIP";
-                sub.innerText = "ДЛЯ КЛАНА";
-                label.style.color = "#ffd700";
-                label.style.textShadow = "none";
+                auth.classList.remove('hidden'); container.classList.add('hidden');
+                label.innerText = "VIP"; sub.innerText = "ДЛЯ КЛАНА";
+                label.style.color = "#ffd700"; label.style.textShadow = "none";
             }
         }
 
-        function exitVip() {
-            localStorage.removeItem('clan_auth');
-            location.reload();
-        }
+        function exitVip() { localStorage.removeItem('clan_auth'); location.reload(); }
+        function openContact() { tg.openTelegramLink("https://t.me/BAW_SAD"); }
 
-        function openContact() {
-            tg.openTelegramLink("https://t.me/BAW_SAD");
-        }
-
-        if(localStorage.getItem('clan_auth')) {
-            toggleVipUI(true);
-        }
+        if(localStorage.getItem('clan_auth')) toggleVipUI(true);
     </script>
 </body>
 </html>
+
 
 
 
