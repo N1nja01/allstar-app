@@ -19,16 +19,17 @@
         .neon-text { color: #ff0000; font-size: 2.2rem; text-shadow: 0 0 15px #ff0000; margin: 0; transition: 0.5s; }
         .sub-title { color: #444; letter-spacing: 3px; font-size: 0.7rem; margin-top: 5px; }
 
-        .screen { 
+        /* Базовая анимация для всех экранов и под-экранов */
+        .screen, .vip-sub-screen { 
             display: none; 
             opacity: 0; 
             transform: translateY(15px); 
-            transition: opacity 0.4s ease, transform 0.4s ease; 
+            transition: opacity 0.3s ease, transform 0.3s ease; 
         }
-        .screen.active { 
-            display: block; 
-            opacity: 1; 
-            transform: translateY(0); 
+        .active { 
+            display: block !important; 
+            opacity: 1 !important; 
+            transform: translateY(0) !important; 
         }
 
         .card { 
@@ -51,7 +52,7 @@
         input { 
             background: #151515; border: 1px solid #333; padding: 15px; color: #fff; 
             border-radius: 10px; font-family: 'Orbitron'; width: 100%; box-sizing: border-box; 
-            margin-bottom: 10px; text-align: center; outline: none; border: 1px solid #222;
+            margin-bottom: 10px; text-align: center; outline: none;
         }
 
         .action-btn { 
@@ -66,27 +67,21 @@
         .back-nav { color: #ff0000; font-size: 0.8rem; cursor: pointer; margin-bottom: 15px; display: inline-block; }
         .hidden { display: none !important; }
         
-        #vip-members { opacity: 0; transition: opacity 0.5s ease; }
-        #vip-members.ready { opacity: 1; }
-
         .status-box { border: 1px solid #ffd700; color: #ffd700; padding: 10px; border-radius: 8px; font-weight: bold; text-align: center; margin-bottom: 20px; font-size: 0.8rem; }
 
-        .vip-section-title { color: #ffd700; font-size: 0.9rem; margin: 10px 0 15px 5px; border-left: 2px solid #ffd700; padding-left: 10px; text-transform: uppercase; letter-spacing: 1px; }
+        .vip-section-title { color: #ffd700; font-size: 0.9rem; margin: 10px 0 15px 5px; border-left: 2px solid #ffd700; padding-left: 10px; text-transform: uppercase; }
         .vip-content-block { background: rgba(255, 255, 255, 0.03); border: 1px solid #222; padding: 15px; border-radius: 10px; margin-bottom: 20px; }
 
         .member-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.75rem; }
-        .member-row:last-child { border-bottom: none; }
         .m-name { color: #fff; font-weight: bold; }
         .m-id { color: #666; font-family: monospace; }
         .m-rank { color: #ffd700; font-size: 0.6rem; margin-bottom: 5px; display: block; opacity: 0.7; }
 
-        /* Специальные кнопки внутри VIP */
         .vip-menu-btn {
             background: #1a1a1a; border: 1px solid #ffd700; color: #ffd700;
             padding: 20px; border-radius: 12px; margin-bottom: 10px;
             text-align: center; font-weight: bold; cursor: pointer; transition: 0.2s;
         }
-        .vip-menu-btn:active { background: #ffd700; color: #000; }
     </style>
 </head>
 <body>
@@ -133,27 +128,26 @@
                 <button class="action-btn" style="background:#ffd700; color:#000;" onclick="tryVip()">ВОЙТИ</button>
             </div>
 
-            <div id="vip-members" class="hidden">
+            <div id="vip-container" class="hidden">
                 <div class="status-box">SYSTEM: ACCESS GRANTED</div>
                 
-                <div id="vip-main-nav">
+                <div id="vip-main-nav" class="vip-sub-screen active">
                     <div class="vip-menu-btn" onclick="showVipSub('vip-list-sub')">👥 УЧАСТНИКИ</div>
                     <div class="vip-menu-btn" onclick="showVipSub('vip-rules-sub')">📜 ПРАВИЛА</div>
+                    <p onclick="exitVip()" style="text-align:center; color:#333; font-size:0.6rem; text-decoration:underline; margin-top:40px; cursor:pointer;">ВЫЙТИ ИЗ СИСТЕМЫ</p>
                 </div>
 
-                <div id="vip-list-sub" class="hidden">
+                <div id="vip-list-sub" class="vip-sub-screen">
                     <div class="vip-section-title">Список состава</div>
                     <div class="vip-content-block">
                         <span class="m-rank">ALL×STAR УПРАВЛЕНИЕ</span>
                         <div class="member-row"><span class="m-name">N1nja</span> <span class="m-id">1649095</span></div>
-                        
                         <div style="height: 15px;"></div>
-                        <span class="m-rank">A•W×Star / A•WAR×Star ОСНОВА</span>
+                        <span class="m-rank">ОСНОВА</span>
                         <div class="member-row"><span class="m-name">Богдан/одиночка</span> <span class="m-id">6085692</span></div>
                         <div class="member-row"><span class="m-name">MR•NAKAUT</span> <span class="m-id">5786825</span></div>
                         <div class="member-row"><span class="m-name">MoonDeity</span> <span class="m-id">15386085</span></div>
                         <div class="member-row"><span class="m-name">MURZOVICH</span> <span class="m-id">4428424</span></div>
-                        <div class="member-row"><span class="m-name">¾OrTeMoN√⁶⁹</span> <span class="m-id">4451372</span></div>
                         <div class="member-row"><span class="m-name">Whiskas</span> <span class="m-id">8297565</span></div>
                         <div class="member-row"><span class="m-name">Artz</span> <span class="m-id">4235225</span></div>
                         <div class="member-row"><span class="m-name">HOMKA</span> <span class="m-id">1852491</span></div>
@@ -161,27 +155,24 @@
                         <div class="member-row"><span class="m-name">BOSS•OLEGRO</span> <span class="m-id">5342294</span></div>
                         <div class="member-row"><span class="m-name">DAVID</span> <span class="m-id">13983900</span></div>
                         <div class="member-row"><span class="m-name">VinniПУХ</span> <span class="m-id">17819485</span></div>
-
                         <div style="height: 15px;"></div>
-                        <span class="m-rank">Little×Star / A•L×Star</span>
+                        <span class="m-rank">Little×Star</span>
                         <div class="member-row"><span class="m-name">kiwi</span> <span class="m-id">6626124</span></div>
                         <div class="member-row"><span class="m-name">Degro</span> <span class="m-id">5961143</span></div>
                         <div class="member-row"><span class="m-name">Navi1tapp</span> <span class="m-id">7425990</span></div>
                     </div>
-                    <button class="action-btn" style="background:#333; font-size:0.7rem;" onclick="closeVipSub()">Назад к меню</button>
+                    <button class="action-btn" style="background:#333; font-size:0.7rem;" onclick="closeVipSub()">Назад</button>
                 </div>
 
-                <div id="vip-rules-sub" class="hidden">
+                <div id="vip-rules-sub" class="vip-sub-screen">
                     <div class="vip-section-title">Устав клана</div>
-                    <div class="vip-content-block" style="color:#aaa; font-size:0.8rem;">
+                    <div class="vip-content-block" style="color:#aaa; font-size:0.8rem; line-height:1.6;">
                         1. Уважение к соклановцам.<br>
-                        2. Активное участие в жизни клана.<br>
+                        2. Активное участие в КВ.<br>
                         3. Соблюдение дисциплины.
                     </div>
-                    <button class="action-btn" style="background:#333; font-size:0.7rem;" onclick="closeVipSub()">Назад к меню</button>
+                    <button class="action-btn" style="background:#333; font-size:0.7rem;" onclick="closeVipSub()">Назад</button>
                 </div>
-
-                <p onclick="exitVip()" style="text-align:center; color:#333; font-size:0.6rem; text-decoration:underline; margin-top:40px; cursor:pointer;">ВЫЙТИ ИЗ СИСТЕМЫ</p>
             </div>
         </div>
     </div>
@@ -202,19 +193,11 @@
             const backBtn = document.getElementById('ui-back');
 
             if (current) {
-                current.style.opacity = "0";
-                current.style.transform = "translateY(15px)";
+                current.classList.remove('active');
             }
 
             setTimeout(() => {
-                if (current) current.classList.remove('active');
                 next.classList.add('active');
-                
-                setTimeout(() => {
-                    next.style.opacity = "1";
-                    next.style.transform = "translateY(0)";
-                }, 50);
-
                 if (screenId === 'main-menu') {
                     backBtn.classList.add('hidden');
                     tg.BackButton.hide();
@@ -222,7 +205,7 @@
                     backBtn.classList.remove('hidden');
                     tg.BackButton.show();
                 }
-            }, 250);
+            }, 50);
         }
 
         function goBack() {
@@ -235,20 +218,29 @@
 
         tg.BackButton.onClick(goBack);
 
-        // Логика под-меню в VIP
         function showVipSub(subId) {
             tg.HapticFeedback.impactOccurred('medium');
-            document.getElementById('vip-main-nav').classList.add('hidden');
-            document.getElementById(subId).classList.remove('hidden');
-            currentActiveSub = subId;
+            const currentMenu = document.querySelector('.vip-sub-screen.active');
+            const nextSub = document.getElementById(subId);
+
+            currentMenu.classList.remove('active');
+            
+            setTimeout(() => {
+                nextSub.classList.add('active');
+                currentActiveSub = subId;
+            }, 150);
         }
 
         function closeVipSub() {
-            if(currentActiveSub) {
-                document.getElementById(currentActiveSub).classList.add('hidden');
-                document.getElementById('vip-main-nav').classList.remove('hidden');
+            const currentSub = document.getElementById(currentActiveSub);
+            const mainMenu = document.getElementById('vip-main-nav');
+
+            currentSub.classList.remove('active');
+            
+            setTimeout(() => {
+                mainMenu.classList.add('active');
                 currentActiveSub = null;
-            }
+            }, 150);
         }
 
         function checkID() {
@@ -284,14 +276,8 @@
                     toggleVipUI(true);
                     const vipCard = document.getElementById('vip-card-main');
                     vipCard.classList.add('auth-flash');
-                    
-                    setTimeout(() => {
-                        document.getElementById('vip-members').classList.add('ready');
-                    }, 400);
-
                     setTimeout(() => vipCard.classList.remove('auth-flash'), 700);
                 }, 300);
-
             } else {
                 tg.showAlert("ОШИБКА КЛЮЧА");
             }
@@ -300,20 +286,19 @@
         function toggleVipUI(isVip) {
             const label = document.getElementById('vip-label');
             const sub = document.getElementById('vip-sub');
-            const members = document.getElementById('vip-members');
+            const container = document.getElementById('vip-container');
             const auth = document.getElementById('vip-auth');
             
             if(isVip) {
                 auth.classList.add('hidden');
-                members.classList.remove('hidden');
+                container.classList.remove('hidden');
                 label.innerText = "ROOM ALL STAR";
                 sub.innerText = "MANAGEMENT";
                 label.style.color = "#fff";
                 label.style.textShadow = "0 0 10px #fff";
             } else {
                 auth.classList.remove('hidden');
-                members.classList.add('hidden');
-                members.classList.remove('ready');
+                container.classList.add('hidden');
                 label.innerText = "VIP";
                 sub.innerText = "ДЛЯ КЛАНА";
                 label.style.color = "#ffd700";
@@ -332,12 +317,10 @@
 
         if(localStorage.getItem('clan_auth')) {
             toggleVipUI(true);
-            document.getElementById('vip-members').classList.add('ready');
         }
     </script>
 </body>
 </html>
-
 
 
 
