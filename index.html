@@ -7,7 +7,6 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* Базовая верстка */
         body { 
             background-color: #080808; color: #ffffff; font-family: 'Orbitron', sans-serif; 
             margin: 0; padding: 20px; display: flex; justify-content: center;
@@ -16,7 +15,6 @@
         
         .app-container { width: 100%; max-width: 450px; }
 
-        /* Шапка */
         header { text-align: center; margin-bottom: 25px; }
         .neon-text { 
             color: #ff0000; font-size: 2.2rem; text-shadow: 0 0 15px #ff0000; margin: 0; 
@@ -24,32 +22,32 @@
         }
         .sub-title { color: #444; letter-spacing: 3px; font-size: 0.7rem; margin-top: 5px; }
 
-        /* ПЛАВНЫЙ ПЕРЕХОД */
+        /* ЭКРАНЫ */
         .screen {
-            display: none; /* По умолчанию скрыты */
+            display: none;
             opacity: 0;
             transform: translateY(5px);
             transition: opacity 0.4s ease, transform 0.4s ease;
         }
 
         .screen.active {
-            display: block; /* Показываем в потоке */
+            display: block;
             opacity: 1;
             transform: translateY(0);
         }
 
-        /* Элементы меню */
+        /* КАРТОЧКИ */
         .card { 
             background: #111; border: 1px solid #222; border-radius: 15px; 
             padding: 20px; margin-bottom: 12px; cursor: pointer; text-align: center; 
             transition: 0.2s;
         }
-        .card:active { transform: scale(0.97); background: #151515; border-color: #ff0000; }
+        .card:active { transform: scale(0.97); border-color: #ff0000; }
         
-        .card-vip { border: 1px solid #ffd700; position: relative; overflow: hidden; }
+        .card-vip { border: 1px solid #ffd700; }
         .card-vip h2 { color: #ffd700; margin: 0; }
 
-        /* Кнопки и инпуты */
+        /* ИНПУТЫ И КНОПКИ */
         input { 
             background: #151515; border: 1px solid #333; padding: 15px; color: #fff; 
             border-radius: 10px; font-family: 'Orbitron'; width: 100%; 
@@ -59,6 +57,36 @@
             background: #ff0000; color: #fff; border: none; padding: 16px; 
             border-radius: 10px; width: 100%; font-family: 'Orbitron'; font-weight: bold;
             cursor: pointer; text-transform: uppercase;
+        }
+
+        /* АНИМАЦИЯ ЗАГРУЗКИ */
+        .loader {
+            display: none;
+            margin: 20px auto;
+            width: 30px;
+            height: 30px;
+            border: 3px solid rgba(255, 0, 0, 0.3);
+            border-radius: 50%;
+            border-top-color: #ff0000;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .scanning-text {
+            display: none;
+            font-size: 0.6rem;
+            color: #ff0000;
+            text-align: center;
+            letter-spacing: 2px;
+            margin-top: 10px;
+            animation: blink 0.8s infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0.3; }
         }
 
         .back-nav { color: #ff0000; font-size: 0.8rem; cursor: pointer; margin-bottom: 15px; display: inline-block; }
@@ -82,13 +110,11 @@
                 <h2>ЧЕРНЫЙ СПИСОК</h2>
                 <p style="color: #555; font-size: 0.7rem;">ПРОВЕРКА ИГРОКОВ</p>
             </div>
-            
             <div class="card card-vip" onclick="showScreen('vip-screen')">
                 <div style="font-size: 24px;">👑</div>
                 <h2 id="vip-label">VIP ДОСТУП</h2>
                 <p style="color: #886d00; font-size: 0.7rem;">ЗАКРЫТЫЙ РАЗДЕЛ</p>
             </div>
-
             <div class="card" onclick="openContact()">
                 <div style="font-size: 24px;">📝</div>
                 <h2>ВСТУПИТЬ</h2>
@@ -97,9 +123,13 @@
         </div>
 
         <div id="blacklist-screen" class="screen">
-            <h3 style="text-align: center; color: #ff0000;">ПРОВЕРКА ID</h3>
+            <h3 style="text-align: center; color: #ff0000;">ID СКАНЕР</h3>
             <input type="number" id="idInput" placeholder="ВВЕДИТЕ ID...">
-            <button class="action-btn" onclick="checkID()">НАЙТИ В БАЗЕ</button>
+            <button id="checkBtn" class="action-btn" onclick="checkID()">НАЧАТЬ ПОИСК</button>
+            
+            <div id="loader" class="loader"></div>
+            <div id="scanText" class="scanning-text">SCANNING DATABASE...</div>
+            
             <div id="check-res" style="text-align: center; margin-top: 20px; font-weight: bold;"></div>
         </div>
 
@@ -125,47 +155,39 @@
         tg.ready();
         tg.expand();
 
-        const blackListData = [10303240, 11648545];
+        const blackListData = [10303240, 11648545, 1234567];
 
         function showScreen(screenId) {
             tg.HapticFeedback.impactOccurred('light');
-            
             const currentScreen = document.querySelector('.screen.active');
             const nextScreen = document.getElementById(screenId);
             const header = document.querySelector('.neon-text');
             const backBtn = document.getElementById('ui-back');
 
-            // 1. Начинаем исчезновение текущего
             if (currentScreen) {
                 currentScreen.style.opacity = '0';
                 currentScreen.style.transform = 'translateY(-5px)';
             }
 
             setTimeout(() => {
-                // 2. Скрываем старый, готовим новый
                 if (currentScreen) currentScreen.classList.remove('active');
-                
                 nextScreen.classList.add('active');
                 
-                // 3. Плавное проявление нового
                 setTimeout(() => {
                     nextScreen.style.opacity = '1';
                     nextScreen.style.transform = 'translateY(0)';
                 }, 50);
 
-                // Логика кнопки "Назад" и Хедера
                 if (screenId === 'main-menu') {
                     header.style.opacity = "1";
-                    header.style.transform = "scale(1)";
                     backBtn.classList.add('hidden');
                     tg.BackButton.hide();
                 } else {
                     header.style.opacity = "0.5";
-                    header.style.transform = "scale(0.9)";
                     backBtn.classList.remove('hidden');
                     tg.BackButton.show();
                 }
-            }, 200); // Время на исчезновение
+            }, 200);
         }
 
         tg.BackButton.onClick(() => showScreen('main-menu'));
@@ -173,25 +195,47 @@
         function checkID() {
             const val = document.getElementById('idInput').value;
             const res = document.getElementById('check-res');
-            if(!val) return;
+            const loader = document.getElementById('loader');
+            const scanText = document.getElementById('scanText');
+            const btn = document.getElementById('checkBtn');
 
-            if(blackListData.includes(Number(val))) {
-                res.innerHTML = "<span style='color:red'>⚠️ ИГРОК В ЧС</span>";
-                tg.HapticFeedback.notificationOccurred('error');
-            } else {
-                res.innerHTML = "<span style='color:green'>✅ ИГРОК ЧИСТ</span>";
-                tg.HapticFeedback.notificationOccurred('success');
+            if(!val) {
+                tg.showAlert("Сначала введите ID!");
+                return;
             }
+
+            // Прячем результат и кнопку, показываем загрузку
+            res.innerHTML = "";
+            btn.style.display = "none";
+            loader.style.display = "block";
+            scanText.style.display = "block";
+            tg.HapticFeedback.impactOccurred('medium');
+
+            // Имитация задержки поиска (1.5 секунды)
+            setTimeout(() => {
+                loader.style.display = "none";
+                scanText.style.display = "none";
+                btn.style.display = "block";
+
+                if(blackListData.includes(Number(val))) {
+                    res.innerHTML = "<span style='color:red'>⚠️ ОБЪЕКТ НАЙДЕН В ЧС</span>";
+                    tg.HapticFeedback.notificationOccurred('error');
+                } else {
+                    res.innerHTML = "<span style='color:green'>✅ ОБЪЕКТ НЕ НАЙДЕН</span>";
+                    tg.HapticFeedback.notificationOccurred('success');
+                }
+            }, 1500);
         }
 
         function tryVip() {
-            const key = document.getElementById('vipKey').value.toUpperCase();
-            if(key === 'ADMIN' || key === 'VIP777') {
+            const key = document.getElementById('vipKey').value.trim().toUpperCase();
+            if(key === 'ADMIN' || key === 'VIP777' || key === 'TEST') {
                 localStorage.setItem('clan_auth', 'true');
                 toggleVipUI(true);
                 tg.HapticFeedback.notificationOccurred('success');
             } else {
                 tg.showAlert("НЕВЕРНЫЙ КЛЮЧ");
+                tg.HapticFeedback.notificationOccurred('error');
             }
         }
 
@@ -215,7 +259,6 @@
             tg.openTelegramLink("https://t.me/BAW_SAD");
         }
 
-        // Проверка при запуске
         if(localStorage.getItem('clan_auth')) toggleVipUI(true);
     </script>
 </body>
