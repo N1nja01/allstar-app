@@ -41,7 +41,6 @@
         .card-vip h2 { color: #ffd700; margin: 0; }
         .vip-subtext { color: #886d00; font-size: 0.7rem; }
 
-        /* Анимация вспышки */
         .auth-flash { animation: flashAnim 0.6s ease-out; }
         @keyframes flashAnim {
             0% { box-shadow: 0 0 0px #fff; }
@@ -67,11 +66,14 @@
         .back-nav { color: #ff0000; font-size: 0.8rem; cursor: pointer; margin-bottom: 15px; display: inline-block; }
         .hidden { display: none !important; }
         
-        /* Скрываем список участников до полной готовности */
         #vip-members { opacity: 0; transition: opacity 0.5s ease; }
         #vip-members.ready { opacity: 1; }
 
         .status-box { border: 1px solid #ffd700; color: #ffd700; padding: 10px; border-radius: 8px; font-weight: bold; text-align: center; margin-bottom: 20px; font-size: 0.8rem; }
+
+        /* Стили для новых пунктов */
+        .vip-section-title { color: #ffd700; font-size: 0.9rem; margin: 20px 0 10px 5px; border-left: 2px solid #ffd700; padding-left: 10px; text-transform: uppercase; }
+        .vip-content-block { background: rgba(255, 255, 255, 0.03); border: 1px solid #222; padding: 15px; border-radius: 10px; color: #888; font-size: 0.8rem; line-height: 1.4; }
     </style>
 </head>
 <body>
@@ -119,12 +121,17 @@
             </div>
             <div id="vip-members" class="hidden">
                 <div class="status-box">SYSTEM: ACCESS GRANTED</div>
-                <h3 style="text-align: center; margin-bottom: 15px;">СОСТАВ</h3>
-                <div id="clan-list">
-                    <div style="background: rgba(255, 255, 255, 0.03); border-left: 3px solid #ffd700; padding: 12px; margin-bottom: 5px; border-radius: 4px; display: flex; justify-content: space-between; font-size: 0.8rem;">
-                        <span>BAW_SAD</span> <span style="color:#ffd700">LEADER</span>
-                    </div>
+                
+                <div class="vip-section-title">👥 Участники</div>
+                <div class="vip-content-block">
+                    Список участников пока пуст...
                 </div>
+
+                <div class="vip-section-title">📜 Правила</div>
+                <div class="vip-content-block">
+                    Правила клана еще не установлены...
+                </div>
+
                 <p onclick="exitVip()" style="text-align:center; color:#333; font-size:0.6rem; text-decoration:underline; margin-top:40px; cursor:pointer;">ВЫЙТИ ИЗ СИСТЕМЫ</p>
             </div>
         </div>
@@ -196,18 +203,13 @@
             if(key === 'ADMIN' || key === 'VIP777') {
                 tg.HapticFeedback.notificationOccurred('success');
                 localStorage.setItem('clan_auth', 'true');
-                
-                // Сначала переходим на главный экран
                 showScreen('main-menu');
 
-                // Ждем пока экран сменится, потом меняем текст и запускаем вспышку
                 setTimeout(() => {
-                    toggleVipUI(true); // Теперь эта функция не показывает список участников сразу
-                    
+                    toggleVipUI(true);
                     const vipCard = document.getElementById('vip-card-main');
                     vipCard.classList.add('auth-flash');
                     
-                    // Показываем контент плавно через секунду после начала вспышки
                     setTimeout(() => {
                         document.getElementById('vip-members').classList.add('ready');
                     }, 400);
@@ -228,7 +230,7 @@
             
             if(isVip) {
                 auth.classList.add('hidden');
-                members.classList.remove('hidden'); // Удаляем display:none, но opacity все еще 0
+                members.classList.remove('hidden');
                 label.innerText = "ROOM ALL STAR";
                 sub.innerText = "MANAGEMENT";
                 label.style.color = "#fff";
@@ -253,7 +255,6 @@
             tg.openTelegramLink("https://t.me/BAW_SAD");
         }
 
-        // Если уже залогинен, показываем все сразу без анимаций
         if(localStorage.getItem('clan_auth')) {
             toggleVipUI(true);
             document.getElementById('vip-members').classList.add('ready');
