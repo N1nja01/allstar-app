@@ -19,19 +19,30 @@
         .neon-text { color: #ff0000; font-size: 2.2rem; text-shadow: 0 0 15px #ff0000; margin: 0; transition: 0.5s; }
         .sub-title { color: #444; letter-spacing: 3px; font-size: 0.7rem; margin-top: 5px; }
 
-        .screen { display: none; opacity: 0; transition: opacity 0.3s ease; }
-        .screen.active { display: block; opacity: 1; }
+        /* Плавные анимации появления экранов */
+        .screen { 
+            display: none; 
+            opacity: 0; 
+            transform: translateY(15px); 
+            transition: opacity 0.4s ease, transform 0.4s ease; 
+        }
+        .screen.active { 
+            display: block; 
+            opacity: 1; 
+            transform: translateY(0); 
+        }
 
         .card { 
             background: #111; border: 1px solid #222; border-radius: 15px; 
             padding: 20px; margin-bottom: 12px; cursor: pointer; text-align: center; transition: 0.2s;
         }
+        .card:active { transform: scale(0.96); }
         
         .card-vip { border: 1px solid #ffd700; position: relative; }
         .card-vip h2 { color: #ffd700; margin: 0; }
         .vip-subtext { color: #886d00; font-size: 0.7rem; }
 
-        /* Анимация вспышки БЕЗ черного экрана */
+        /* Анимация вспышки VIP */
         .auth-flash { animation: flashAnim 0.6s ease-out; }
         @keyframes flashAnim {
             0% { box-shadow: 0 0 0px #fff; }
@@ -42,24 +53,23 @@
         input { 
             background: #151515; border: 1px solid #333; padding: 15px; color: #fff; 
             border-radius: 10px; font-family: 'Orbitron'; width: 100%; box-sizing: border-box; 
-            margin-bottom: 10px; text-align: center; outline: none;
+            margin-bottom: 10px; text-align: center; outline: none; border: 1px solid #222;
         }
+        input:focus { border-color: #ff0000; }
 
         .action-btn { 
             background: #ff0000; color: #fff; border: none; padding: 16px; 
             border-radius: 10px; width: 100%; font-family: 'Orbitron'; font-weight: bold;
-            cursor: pointer; text-transform: uppercase;
+            cursor: pointer; text-transform: uppercase; transition: 0.2s;
         }
+        .action-btn:active { transform: scale(0.98); opacity: 0.8; }
 
         .loader { display: none; margin: 25px auto; width: 30px; height: 30px; border: 3px solid rgba(255, 0, 0, 0.2); border-radius: 50%; border-top-color: #ff0000; animation: spin 1s infinite linear; }
         @keyframes spin { to { transform: rotate(360deg); } }
         
-        .back-nav { color: #ff0000; font-size: 0.8rem; cursor: pointer; margin-bottom: 15px; display: inline-block; }
+        .back-nav { color: #ff0000; font-size: 0.8rem; cursor: pointer; margin-bottom: 15px; display: inline-block; transition: 0.3s; }
         .hidden { display: none !important; }
         
-        /* Контент плавно проявляется */
-        #vip-members { opacity: 1; transition: opacity 0.4s ease; }
-
         .status-box { border: 1px solid #ffd700; color: #ffd700; padding: 10px; border-radius: 8px; font-weight: bold; text-align: center; margin-bottom: 20px; font-size: 0.8rem; }
     </style>
 </head>
@@ -93,11 +103,11 @@
         </div>
 
         <div id="blacklist-screen" class="screen">
-            <h3 style="text-align: center; color: #ff0000;">ID СКАНЕР</h3>
+            <h3 style="text-align: center; color: #ff0000; margin-bottom: 20px;">ID СКАНЕР</h3>
             <input type="number" id="idInput" placeholder="ВВЕДИТЕ ID ИГРОКА...">
             <button id="checkBtn" class="action-btn" onclick="checkID()">ПРОВЕРИТЬ БАЗУ</button>
             <div id="loader" class="loader"></div>
-            <div id="check-res" style="text-align: center; margin-top: 30px; font-weight: bold;"></div>
+            <div id="check-res" style="text-align: center; margin-top: 30px; font-weight: bold; font-size: 1.1rem;"></div>
         </div>
 
         <div id="vip-screen" class="screen">
@@ -128,18 +138,35 @@
 
         function showScreen(screenId) {
             tg.HapticFeedback.impactOccurred('light');
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            const nextScreen = document.getElementById(screenId);
-            nextScreen.classList.add('active');
-
+            
+            const current = document.querySelector('.screen.active');
+            const next = document.getElementById(screenId);
             const backBtn = document.getElementById('ui-back');
-            if (screenId === 'main-menu') {
-                backBtn.classList.add('hidden');
-                tg.BackButton.hide();
-            } else {
-                backBtn.classList.remove('hidden');
-                tg.BackButton.show();
+
+            // Сначала гасим текущий
+            if (current) {
+                current.style.opacity = "0";
+                current.style.transform = "translateY(15px)";
             }
+
+            setTimeout(() => {
+                if (current) current.classList.remove('active');
+                next.classList.add('active');
+                
+                // Плавное появление нового экрана
+                setTimeout(() => {
+                    next.style.opacity = "1";
+                    next.style.transform = "translateY(0)";
+                }, 50);
+
+                if (screenId === 'main-menu') {
+                    backBtn.classList.add('hidden');
+                    tg.BackButton.hide();
+                } else {
+                    backBtn.classList.remove('hidden');
+                    tg.BackButton.show();
+                }
+            }, 250); // Небольшая задержка для плавности смены
         }
 
         tg.BackButton.onClick(() => showScreen('main-menu'));
@@ -172,18 +199,15 @@
                 tg.HapticFeedback.notificationOccurred('success');
                 localStorage.setItem('clan_auth', 'true');
                 
-                // Сначала переключаем UI
                 toggleVipUI(true);
-                
-                // Мгновенно переходим на главную
                 showScreen('main-menu');
 
-                // И ТОЛЬКО ТУТ запускаем вспышку
-                const vipCard = document.getElementById('vip-card-main');
-                vipCard.classList.add('auth-flash');
-                
-                // Убираем класс анимации после завершения, чтобы можно было вызвать снова
-                setTimeout(() => vipCard.classList.remove('auth-flash'), 700);
+                // Вспышка на главной после перехода
+                setTimeout(() => {
+                    const vipCard = document.getElementById('vip-card-main');
+                    vipCard.classList.add('auth-flash');
+                    setTimeout(() => vipCard.classList.remove('auth-flash'), 700);
+                }, 300);
 
             } else {
                 tg.showAlert("ОШИБКА КЛЮЧА");
