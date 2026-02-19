@@ -19,12 +19,14 @@
         .neon-text { color: #ff0000; font-size: 2.2rem; text-shadow: 0 0 15px #ff0000; margin: 0; transition: 0.5s; }
         .sub-title { color: #444; letter-spacing: 3px; font-size: 0.7rem; margin-top: 5px; }
 
+        /* Анимации основных экранов */
         .screen { 
             display: none; opacity: 0; transform: translateY(15px); 
             transition: opacity 0.4s ease, transform 0.4s ease; 
         }
         .screen.active { display: block; opacity: 1; transform: translateY(0); }
 
+        /* Анимация для подразделов VIP */
         .vip-sub-fade { animation: subFadeIn 0.4s ease forwards; }
         @keyframes subFadeIn {
             from { opacity: 0; transform: translateY(10px); }
@@ -69,7 +71,17 @@
         #vip-members { opacity: 0; transition: opacity 0.5s ease; }
         #vip-members.ready { opacity: 1; }
 
-        .status-box { border: 1px solid #ffd700; color: #ffd700; padding: 10px; border-radius: 8px; font-weight: bold; text-align: center; margin-bottom: 20px; font-size: 0.8rem; }
+        .status-box { 
+            border: 1px solid #ffd700; color: #ffd700; padding: 10px; 
+            border-radius: 8px; font-weight: bold; text-align: center; 
+            margin-bottom: 20px; font-size: 0.8rem;
+            animation: pulse-gold 2s infinite;
+        }
+        @keyframes pulse-gold {
+            0% { box-shadow: 0 0 0px rgba(255, 215, 0, 0.2); }
+            50% { box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+            100% { box-shadow: 0 0 0px rgba(255, 215, 0, 0.2); }
+        }
 
         .vip-section-title { color: #ffd700; font-size: 0.9rem; margin: 10px 0 15px 5px; border-left: 2px solid #ffd700; padding-left: 10px; text-transform: uppercase; letter-spacing: 1px; }
         .vip-content-block { background: rgba(255, 255, 255, 0.03); border: 1px solid #222; padding: 15px; border-radius: 10px; margin-bottom: 20px; }
@@ -81,7 +93,6 @@
         .m-rank { color: #ffd700; font-size: 0.6rem; margin-bottom: 5px; display: block; opacity: 0.7; }
 
         .rule-item { margin-bottom: 15px; font-size: 0.75rem; line-height: 1.4; color: #ccc; }
-        .rule-num { color: #ffd700; font-weight: bold; margin-right: 5px; }
         .rule-title { color: #fff; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 3px; }
 
         .vip-menu-btn {
@@ -137,7 +148,7 @@
             </div>
 
             <div id="vip-members" class="hidden">
-                <div class="status-box">SYSTEM: ACCESS GRANTED</div>
+                <div class="status-box">ALL STAR DATABASE: ONLINE</div>
                 
                 <div id="vip-main-nav">
                     <div class="vip-menu-btn" onclick="showVipSub('vip-list-sub')">👥 УЧАСТНИКИ</div>
@@ -149,8 +160,9 @@
                     <div class="vip-content-block">
                         <span class="m-rank">ALL×STAR УПРАВЛЕНИЕ</span>
                         <div class="member-row"><span class="m-name">N1nja</span> <span class="m-id">1649095</span></div>
+                        
                         <div style="height: 15px;"></div>
-                        <span class="m-rank">ОСНОВА CLAN</span>
+                        <span class="m-rank">A•W×Star / A•WAR×Star ОСНОВА</span>
                         <div class="member-row"><span class="m-name">Богдан/одиночка</span> <span class="m-id">6085692</span></div>
                         <div class="member-row"><span class="m-name">MR•NAKAUT</span> <span class="m-id">5786825</span></div>
                         <div class="member-row"><span class="m-name">MoonDeity</span> <span class="m-id">15386085</span></div>
@@ -163,8 +175,9 @@
                         <div class="member-row"><span class="m-name">BOSS•OLEGRO</span> <span class="m-id">5342294</span></div>
                         <div class="member-row"><span class="m-name">DAVID</span> <span class="m-id">13983900</span></div>
                         <div class="member-row"><span class="m-name">VinniПУХ</span> <span class="m-id">17819485</span></div>
+
                         <div style="height: 15px;"></div>
-                        <span class="m-rank">LITTLE STAR</span>
+                        <span class="m-rank">Little×Star / A•L×Star</span>
                         <div class="member-row"><span class="m-name">kiwi</span> <span class="m-id">6626124</span></div>
                         <div class="member-row"><span class="m-name">Degro</span> <span class="m-id">5961143</span></div>
                         <div class="member-row"><span class="m-name">Navi1tapp</span> <span class="m-id">7425990</span></div>
@@ -177,24 +190,25 @@
                     <div class="vip-content-block">
                         <p style="font-size: 0.65rem; color: #ff4444; margin-bottom: 15px;">Нарушение = НПК (Нарушение Правил Клана)</p>
                         
-                        <div class="rule-item"><span class="rule-title">1. ОСК / РОД</span>Запрещены любые оскорбления игроков, нации и семьи. Шутки про детдом неуместны.</div>
-                        <div class="rule-item"><span class="rule-title">2. ЛИЧНАЯ ИНФОРМАЦИЯ</span>Запрещено распространять: ФИО, фото, видео, номер, адрес и соцсети участников.</div>
-                        <div class="rule-item"><span class="rule-title">3. ЗП (ЗАПРЕТКА)</span>Запрещена пропаганда нацизма, наркотиков, алкоголя, порнографии и вредоносных ссылок.</div>
-                        <div class="rule-item"><span class="rule-title">4. ПОПРОШАЙ</span>Запрещено попрошайничество (донат можно просить 1 раз в неделю в спец. чате).</div>
-                        <div class="rule-item"><span class="rule-title">5. ПРОВОКАТОР</span>Запрещено провоцировать участников на нарушение правил.</div>
-                        <div class="rule-item"><span class="rule-title">6. ГЛАВ / ЗАМ</span>Запрещено выдавать себя за руководство, разработчиков или админов.</div>
-                        <div class="rule-item"><span class="rule-title">7. НЕАДЕКВАТ</span>Запрещены угрозы, хамство, взятки, шантаж и вымогательство в ТГ и игре.</div>
-                        <div class="rule-item"><span class="rule-title">8. АГЕНТ / ПРЕДАТЕЛЬ</span>Слив информации или работа на другой клан карается исключением.</div>
-                        <div class="rule-item"><span class="rule-title">9. МАНИПУЛЯЦИИ</span>Запрещено выпрашивать админку или пытаться выудить инфу у союзников.</div>
-                        <div class="rule-item"><span class="rule-title">10. ДРУЖБА С ВРАГОМ</span>Держать в друзьях врагов клана запрещено (на усмотрение управления).</div>
-                        <div class="rule-item"><span class="rule-title">11. МОШЕННИЧЕСТВО</span>Участие в кражах аккаунтов, создание фейковых пруфов и чатов.</div>
-                        <div class="rule-item"><span class="rule-title">12. ВРЕДИТЕЛЬСТВО</span>Запрещен захват или снос чужих чатов при получении админки.</div>
-                        <div class="rule-item"><span class="rule-title">13. ПАССИВКА</span>Запрещено бегать в пассивном режиме.</div>
-                        <div class="rule-item"><span class="rule-title">14. ТВИНКИ</span>Твины не состоят в клане. Твинк должен быть подтвержден лично главе.</div>
-                        <div class="rule-item"><span class="rule-title">15. СЛИВ СООБЩЕНИЙ</span>Запрещено выносить информацию из клановых и союзных групп.</div>
-                        <div class="rule-item"><span class="rule-title">16. ТРЕНИРОВКИ</span>Запрещено убивать с ножей/леденцов/катан. Стримы и видео запрещены.</div>
+                        <div class="rule-item"><span class="rule-title">1. Оск/Оск род</span>Запрещены любые оскорбления игроков, нации и семьи. Шутки про дет дом не уместны.</div>
+                        <div class="rule-item"><span class="rule-title">2. Лич. Инфа</span>Запрещено распространять личные данные: ФИО, фото лица, номер, соц. сети и т. д.</div>
+                        <div class="rule-item"><span class="rule-title">3. ЗП (Запрещенный контент)</span>Пропаганда нацизма, наркотиков, алкоголя, порнографии и вредоносных ссылок.</div>
+                        <div class="rule-item"><span class="rule-title">4. Попрошай</span>Запрещено попрошайничество. Донат можно просить 1 раз в неделю в клан-чате.</div>
+                        <div class="rule-item"><span class="rule-title">5. Провокатор</span>Запрещено провоцировать на нарушение правил.</div>
+                        <div class="rule-item"><span class="rule-title">6. Глав/зам</span>Запрещено выдавать себя за главу, заместителя или разработчика игры.</div>
+                        <div class="rule-item"><span class="rule-title">7. Неадекват</span>Запрещены угрозы, хамство, взятки, вымогательство и шантаж.</div>
+                        <div class="rule-item"><span class="rule-title">8. Агент/Предатель</span>Слив инфы или работа на другой клан карается исключением.</div>
+                        <div class="rule-item"><span class="rule-title">9. Манипуляции</span>Запрещено выпрашивать админку или вытягивать инфу у союзников.</div>
+                        <div class="rule-item"><span class="rule-title">10. Враги</span>Держать в друзьях врагов клана запрещено (на усмотрение управления).</div>
+                        <div class="rule-item"><span class="rule-title">11. Мошенничество</span>Участие в краже аккаунтов, создание фейковых пруфов и чатов.</div>
+                        <div class="rule-item"><span class="rule-title">12. Вредительство</span>Захват или снос чужих чатов при получении админки.</div>
+                        <div class="rule-item"><span class="rule-title">13. Пассивка</span>Запрещено бегать в пассивном режиме.</div>
+                        <div class="rule-item"><span class="rule-title">14. Твинки</span>Твины не состоят в клане. Твинк подтверждается только лично главе.</div>
+                        <div class="rule-item"><span class="rule-title">15. Слив сообщений</span>Запрещено выносить инфу из клановых или союзных групп.</div>
+                        <div class="rule-item"><span class="rule-title">16. Обновления</span>Распространение сливов обновления (на усмотрение управления).</div>
+                        <div class="rule-item"><span class="rule-title">17. Тренировки</span>Запрещено убивать с ножей/леденцов/катан. Видео и стримы запрещены.</div>
 
-                        <p style="font-size: 0.6rem; color: #666; text-align: center; margin-top: 10px;">Прочтено — ознакомлено. БЕЗ ПРАВА ВОЗВРАТА.</p>
+                        <p style="font-size: 0.6rem; color: #666; text-align: center; margin-top: 10px;">Прочтено — ознакомлено. Исключение БЕЗ ПРАВА ВОЗВРАТА.</p>
                     </div>
                     <button class="action-btn" style="background:#333; font-size:0.7rem;" onclick="closeVipSub()">Назад к меню</button>
                 </div>
