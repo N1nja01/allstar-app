@@ -16,42 +16,24 @@
         .app-container { width: 100%; max-width: 450px; }
 
         header { text-align: center; margin-bottom: 25px; }
-        .neon-text { 
-            color: #ff0000; font-size: 2.2rem; text-shadow: 0 0 15px #ff0000; margin: 0; 
-            transition: 0.5s;
-        }
+        .neon-text { color: #ff0000; font-size: 2.2rem; text-shadow: 0 0 15px #ff0000; margin: 0; transition: 0.5s; }
         .sub-title { color: #444; letter-spacing: 3px; font-size: 0.7rem; margin-top: 5px; }
 
-        /* ЭКРАНЫ */
-        .screen {
-            display: none;
-            opacity: 0;
-            transform: translateY(5px);
-            transition: opacity 0.4s ease, transform 0.4s ease;
-        }
+        .screen { display: none; opacity: 0; transform: translateY(5px); transition: 0.4s ease; }
+        .screen.active { display: block; opacity: 1; transform: translateY(0); }
 
-        .screen.active {
-            display: block;
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* КАРТОЧКИ */
         .card { 
             background: #111; border: 1px solid #222; border-radius: 15px; 
-            padding: 20px; margin-bottom: 12px; cursor: pointer; text-align: center; 
-            transition: 0.2s;
+            padding: 20px; margin-bottom: 12px; cursor: pointer; text-align: center; transition: 0.2s;
         }
         .card:active { transform: scale(0.97); border-color: #ff0000; }
-        
         .card-vip { border: 1px solid #ffd700; }
         .card-vip h2 { color: #ffd700; margin: 0; }
 
-        /* ИНПУТЫ И КНОПКИ */
         input { 
             background: #151515; border: 1px solid #333; padding: 15px; color: #fff; 
-            border-radius: 10px; font-family: 'Orbitron'; width: 100%; 
-            box-sizing: border-box; margin-bottom: 10px; text-align: center; outline: none;
+            border-radius: 10px; font-family: 'Orbitron'; width: 100%; box-sizing: border-box; 
+            margin-bottom: 10px; text-align: center; outline: none;
         }
         .action-btn { 
             background: #ff0000; color: #fff; border: none; padding: 16px; 
@@ -59,39 +41,37 @@
             cursor: pointer; text-transform: uppercase;
         }
 
-        /* АНИМАЦИЯ ЗАГРУЗКИ */
-        .loader {
-            display: none;
-            margin: 20px auto;
-            width: 30px;
-            height: 30px;
-            border: 3px solid rgba(255, 0, 0, 0.3);
-            border-radius: 50%;
-            border-top-color: #ff0000;
-            animation: spin 1s ease-in-out infinite;
+        /* Список ID в ЧС */
+        .blacklist-container {
+            margin-top: 30px;
+            background: rgba(255, 0, 0, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            border: 1px solid #300;
         }
+        .blacklist-title { color: #ff0000; font-size: 0.7rem; text-align: center; margin-bottom: 10px; letter-spacing: 2px; }
+        .id-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 8px; 
+            max-height: 300px; 
+            overflow-y: auto; 
+            padding-right: 5px;
+        }
+        .id-item { background: #1a0000; padding: 6px; border-radius: 4px; color: #ff4444; font-size: 0.75rem; border: 1px solid #400; text-align: center; }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        /* Кастомный скроллбар для списка */
+        .id-grid::-webkit-scrollbar { width: 4px; }
+        .id-grid::-webkit-scrollbar-thumb { background: #ff0000; border-radius: 10px; }
 
-        .scanning-text {
-            display: none;
-            font-size: 0.6rem;
-            color: #ff0000;
-            text-align: center;
-            letter-spacing: 2px;
-            margin-top: 10px;
-            animation: blink 0.8s infinite;
-        }
-
-        @keyframes blink {
-            50% { opacity: 0.3; }
-        }
+        /* Лоадер */
+        .loader { display: none; margin: 20px auto; width: 30px; height: 30px; border: 3px solid rgba(255, 0, 0, 0.3); border-radius: 50%; border-top-color: #ff0000; animation: spin 1s infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .scanning-text { display: none; font-size: 0.6rem; color: #ff0000; text-align: center; letter-spacing: 2px; animation: blink 0.8s infinite; }
+        @keyframes blink { 50% { opacity: 0.3; } }
 
         .back-nav { color: #ff0000; font-size: 0.8rem; cursor: pointer; margin-bottom: 15px; display: inline-block; }
         .hidden { display: none !important; }
-        
         .status-box { background: #ffd700; color: #000; padding: 10px; border-radius: 8px; font-weight: bold; text-align: center; margin-bottom: 15px; }
     </style>
 </head>
@@ -108,17 +88,17 @@
             <div class="card" onclick="showScreen('blacklist-screen')">
                 <div style="font-size: 24px;">🚫</div>
                 <h2>ЧЕРНЫЙ СПИСОК</h2>
-                <p style="color: #555; font-size: 0.7rem;">ПРОВЕРКА ИГРОКОВ</p>
+                <p style="color: #555; font-size: 0.7rem;">ПРОВЕРКА ПО БАЗЕ</p>
             </div>
             <div class="card card-vip" onclick="showScreen('vip-screen')">
                 <div style="font-size: 24px;">👑</div>
                 <h2 id="vip-label">VIP ДОСТУП</h2>
-                <p style="color: #886d00; font-size: 0.7rem;">ЗАКРЫТЫЙ РАЗДЕЛ</p>
+                <p style="color: #886d00; font-size: 0.7rem;">УПРАВЛЕНИЕ КЛАНОМ</p>
             </div>
             <div class="card" onclick="openContact()">
                 <div style="font-size: 24px;">📝</div>
                 <h2>ВСТУПИТЬ</h2>
-                <p style="color: #555; font-size: 0.7rem;">ЗАЯВКА ЛИДЕРУ</p>
+                <p style="color: #555; font-size: 0.7rem;">СВЯЗЬ С ЛИДЕРОМ</p>
             </div>
         </div>
 
@@ -126,11 +106,14 @@
             <h3 style="text-align: center; color: #ff0000;">ID СКАНЕР</h3>
             <input type="number" id="idInput" placeholder="ВВЕДИТЕ ID...">
             <button id="checkBtn" class="action-btn" onclick="checkID()">НАЧАТЬ ПОИСК</button>
-            
             <div id="loader" class="loader"></div>
             <div id="scanText" class="scanning-text">SCANNING DATABASE...</div>
-            
             <div id="check-res" style="text-align: center; margin-top: 20px; font-weight: bold;"></div>
+
+            <div class="blacklist-container">
+                <div class="blacklist-title">DATABASE: BANNED ID</div>
+                <div id="id-list-grid" class="id-grid"></div>
+            </div>
         </div>
 
         <div id="vip-screen" class="screen">
@@ -141,11 +124,13 @@
             </div>
             <div id="vip-members" class="hidden">
                 <div class="status-box">СТАТУС: VIP АКТИВЕН</div>
-                <div class="card">
-                    <h3>СПИСОК СОСТАВА</h3>
-                    <p style="color: #444;">ДОСТУПНО ТОЛЬКО ВАМ</p>
+                <h3 style="text-align: center; margin: 20px 0;">СОСТАВ КЛАНА</h3>
+                <div id="clan-list">
+                    <div style="background: rgba(255, 255, 255, 0.03); border-left: 3px solid #ffd700; margin-bottom: 8px; padding: 12px; display: flex; justify-content: space-between; font-size: 0.8rem;">
+                        <span>BAW_SAD</span> <span style="color:#ffd700">LEADER</span>
+                    </div>
                 </div>
-                <p onclick="exitVip()" style="text-align:center; color:#222; font-size:0.6rem; text-decoration:underline; margin-top:20px;">ВЫЙТИ</p>
+                <p onclick="exitVip()" style="text-align:center; color:#222; font-size:0.6rem; text-decoration:underline; margin-top:30px;">ВЫЙТИ</p>
             </div>
         </div>
     </div>
@@ -155,7 +140,39 @@
         tg.ready();
         tg.expand();
 
-        const blackListData = [10303240, 11648545, 1234567];
+        const blackListData = [
+            10303240, 11648545, 11702640, 12294615, 13087170, 13448940, 14208965, 14370070, 
+            14694735, 14815745, 14991700, 15137275, 15208965, 15244365, 15330640, 15575720, 
+            15847470, 16115965, 16319360, 16321645, 16393285, 16725560, 16952270, 17086755, 
+            17399535, 17608000, 17732855, 17761345, 18979230, 19523695, 1993449, 21158260, 
+            21926965, 21962895, 2662588, 3121685, 3371367, 3630468, 3822719, 3836656, 
+            3878276, 3969698, 4002176, 4143088, 4177889, 4218556, 4266638, 4295673, 
+            4378405, 4391082, 4410686, 4583263, 4665274, 4701070, 4704105, 4704781, 
+            4816211, 4902420, 5040096, 5148078, 5206729, 5342294, 5287149, 5588738, 
+            5705174, 5708535, 5752266, 5771145, 5788245, 5829270, 5844182, 5943167, 
+            5947027, 5982489, 5987309, 5991183, 6027602, 6027207, 6030137, 6085692, 
+            6092722, 6116862, 6117188, 6142792, 6155858, 6166546, 6195747, 6220279, 
+            6238684, 6239624, 6273994, 6517659, 6569708, 6614274, 6645546, 6670243, 
+            6706810, 6710212, 6745226, 6794424, 6892904, 6894117, 6917475, 6968280, 
+            7076535, 7079048, 7087225, 7099198, 7186705, 7255114, 7369019, 7421627, 
+            7411344, 7422590, 7474480, 7486355, 7534127, 7563550, 7583887, 7631943, 
+            7728115, 7818211, 7843225, 7910826, 7910926, 7954364, 8085601, 8164037, 
+            8208990, 8278910, 8295931, 8313783, 8325737, 8331639, 8343285, 8364791, 
+            8396294, 8419988, 8535478, 8545833, 8741924, 8888564, 8969060, 8969584, 
+            9003628, 9117736, 9775550, 9802790, 2819306
+        ];
+
+        function renderBlackList() {
+            const grid = document.getElementById('id-list-grid');
+            grid.innerHTML = "";
+            blackListData.sort((a, b) => a - b).forEach(id => {
+                const div = document.createElement('div');
+                div.className = 'id-item';
+                div.innerText = id;
+                grid.appendChild(div);
+            });
+        }
+        renderBlackList();
 
         function showScreen(screenId) {
             tg.HapticFeedback.impactOccurred('light');
@@ -163,21 +180,17 @@
             const nextScreen = document.getElementById(screenId);
             const header = document.querySelector('.neon-text');
             const backBtn = document.getElementById('ui-back');
-
             if (currentScreen) {
                 currentScreen.style.opacity = '0';
                 currentScreen.style.transform = 'translateY(-5px)';
             }
-
             setTimeout(() => {
                 if (currentScreen) currentScreen.classList.remove('active');
                 nextScreen.classList.add('active');
-                
                 setTimeout(() => {
                     nextScreen.style.opacity = '1';
                     nextScreen.style.transform = 'translateY(0)';
                 }, 50);
-
                 if (screenId === 'main-menu') {
                     header.style.opacity = "1";
                     backBtn.classList.add('hidden');
@@ -198,25 +211,16 @@
             const loader = document.getElementById('loader');
             const scanText = document.getElementById('scanText');
             const btn = document.getElementById('checkBtn');
-
-            if(!val) {
-                tg.showAlert("Сначала введите ID!");
-                return;
-            }
-
-            // Прячем результат и кнопку, показываем загрузку
+            if(!val) return;
             res.innerHTML = "";
             btn.style.display = "none";
             loader.style.display = "block";
             scanText.style.display = "block";
             tg.HapticFeedback.impactOccurred('medium');
-
-            // Имитация задержки поиска (1.5 секунды)
             setTimeout(() => {
                 loader.style.display = "none";
                 scanText.style.display = "none";
                 btn.style.display = "block";
-
                 if(blackListData.includes(Number(val))) {
                     res.innerHTML = "<span style='color:red'>⚠️ ОБЪЕКТ НАЙДЕН В ЧС</span>";
                     tg.HapticFeedback.notificationOccurred('error');
@@ -224,18 +228,17 @@
                     res.innerHTML = "<span style='color:green'>✅ ОБЪЕКТ НЕ НАЙДЕН</span>";
                     tg.HapticFeedback.notificationOccurred('success');
                 }
-            }, 1500);
+            }, 1200);
         }
 
         function tryVip() {
             const key = document.getElementById('vipKey').value.trim().toUpperCase();
-            if(key === 'ADMIN' || key === 'VIP777' || key === 'TEST') {
+            if(key === 'ADMIN' || key === 'VIP777') {
                 localStorage.setItem('clan_auth', 'true');
                 toggleVipUI(true);
                 tg.HapticFeedback.notificationOccurred('success');
             } else {
                 tg.showAlert("НЕВЕРНЫЙ КЛЮЧ");
-                tg.HapticFeedback.notificationOccurred('error');
             }
         }
 
@@ -263,6 +266,7 @@
     </script>
 </body>
 </html>
+
 
 
 
