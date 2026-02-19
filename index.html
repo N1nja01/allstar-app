@@ -31,12 +31,7 @@
         /* КОМПАКТНЫЙ VIP СТАТУС */
         .vip-card-mini { 
             background: linear-gradient(135deg, #ffd700 0%, #b8860b 100%); 
-            padding: 12px; 
-            border-radius: 12px; 
-            color: #000; 
-            text-align: center; 
-            margin-top: 10px;
-            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.1);
+            padding: 12px; border-radius: 12px; color: #000; text-align: center; margin-top: 10px; box-shadow: 0 5px 15px rgba(255, 215, 0, 0.1);
         }
         .vip-card-mini .label { font-size: 0.5rem; text-transform: uppercase; font-weight: bold; opacity: 0.7; display: block; margin-bottom: 2px; }
         .vip-card-mini .status-val { font-size: 0.85rem; font-weight: bold; }
@@ -45,9 +40,7 @@
             background: #fff; color: #000; border: none; padding: 18px; margin-top: 20px; border-radius: 15px; width: 100%; font-family: 'Orbitron'; font-weight: bold; cursor: pointer; text-transform: uppercase;
         }
 
-        .reset-link { 
-            display: block; margin-top: 25px; color: #444; font-size: 0.6rem; text-decoration: underline; cursor: pointer; text-align: center; text-transform: uppercase; letter-spacing: 1px;
-        }
+        .reset-link { display: block; margin-top: 25px; color: #444; font-size: 0.6rem; text-decoration: underline; cursor: pointer; text-align: center; text-transform: uppercase; letter-spacing: 1px; }
 
         .members-list { background: rgba(255, 255, 255, 0.05); border-radius: 15px; padding: 40px 20px; margin-top: 20px; border: 1px dashed #333; color: #555; text-align: center; font-size: 0.8rem; }
     </style>
@@ -105,7 +98,6 @@
                     <div class="status-val" id="vip-type-title">АКТИВЕН</div>
                 </div>
                 <button class="vip-only-btn" onclick="showScreen('members-screen')">👥 Участники</button>
-                
                 <span class="reset-link" onclick="resetVip()">Сбросить статус (тест)</span>
             </div>
         </div>
@@ -125,13 +117,32 @@
 
         const blackListData = [10303240, 11648545, 11702640];
 
+        // ПРОВЕРКА ВРЕМЕНИ ПРИ ЗАГРУЗКЕ
         window.onload = function() {
-            const savedVip = localStorage.getItem('userVipStatus');
-            if (savedVip) {
-                applyVipUI(savedVip);
-                updateMainMenuUI(true);
-            }
+            checkExpiry();
         };
+
+        function checkExpiry() {
+            const savedVip = localStorage.getItem('userVipStatus');
+            const expiryTime = localStorage.getItem('vipExpiry');
+
+            if (savedVip && expiryTime) {
+                if (Date.now() > parseInt(expiryTime)) {
+                    clearVipData();
+                } else {
+                    applyVipUI(savedVip);
+                    updateMainMenuUI(true);
+                }
+            }
+        }
+
+        function clearVipData() {
+            localStorage.removeItem('userVipStatus');
+            localStorage.removeItem('vipExpiry');
+            updateMainMenuUI(false);
+            document.getElementById('vip-content').classList.add('hidden');
+            document.getElementById('vip-form').classList.remove('hidden');
+        }
 
         function updateMainMenuUI(isVip) {
             if (isVip) {
@@ -145,6 +156,12 @@
 
         function showScreen(screenId) {
             tg.HapticFeedback.impactOccurred('light');
+            
+            // Перед показом VIP экрана проверяем, не истекло ли время
+            if (screenId === 'vip-screen' || screenId === 'main-menu') {
+                checkExpiry();
+            }
+
             const screens = ['main-menu', 'blacklist-screen', 'vip-screen', 'members-screen'];
             screens.forEach(s => document.getElementById(s).classList.add('hidden'));
             document.getElementById('app-header').classList.add('hidden');
@@ -198,14 +215,30 @@
         function checkVipCode() {
             const code = document.getElementById('vipCodeInput').value.trim();
             let status = "";
+            let duration = 0;
 
-            if (code === "VIP1DAY") status = "АКТИВЕН: 1 ДЕНЬ";
-            else if (code === "VIP7DAY") status = "АКТИВЕН: 7 ДНЕЙ";
-            else if (code === "VIP30DAY") status = "АКТИВЕН: 30 ДНЕЙ";
-            else if (code === "ULTIMATE") status = "АКТИВЕН: НАВСЕГДА 👑";
+            if (code === "TEST1MIN") {
+                status = "ТЕСТ-ДОСТУП: 1 МИНУТА";
+                duration = 60 * 1000;
+            } else if (code === "VIP1DAY") {
+                status = "АКТИВЕН: 1 ДЕНЬ";
+                duration = 24 * 60 * 60 * 1000;
+            } else if (code === "VIP7DAY") {
+                status = "АКТИВЕН: 7 ДНЕЙ";
+                duration = 7 * 24 * 60 * 60 * 1000;
+            } else if (code === "VIP30DAY") {
+                status = "АКТИВЕН: 30 ДНЕЙ";
+                duration = 30 * 24 * 60 * 60 * 1000;
+            } else if (code === "ULTIMATE") {
+                status = "АКТИВЕН: НАВСЕГДА 👑";
+                duration = 3650 * 24 * 60 * 60 * 1000;
+            }
 
             if (status !== "") {
+                const expiryDate = Date.now() + duration;
                 localStorage.setItem('userVipStatus', status);
+                localStorage.setItem('vipExpiry', expiryDate.toString());
+                
                 applyVipUI(status);
                 updateMainMenuUI(true);
                 tg.HapticFeedback.notificationOccurred('success');
@@ -215,14 +248,14 @@
             }
         }
 
-        // ФУНКЦИЯ СБРОСА ДЛЯ ТЕСТОВ
         function resetVip() {
-            localStorage.removeItem('userVipStatus');
-            location.reload(); // Перезагрузка страницы
+            clearVipData();
+            location.reload();
         }
     </script>
 </body>
 </html>
+
 
 
 
