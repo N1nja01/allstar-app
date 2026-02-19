@@ -1,3 +1,39 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ALL STAR CLAN</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            background-color: #080808; color: #ffffff; font-family: 'Orbitron', sans-serif; 
+            margin: 0; padding: 20px; display: flex; justify-content: center;
+            min-height: 100vh; box-sizing: border-box; overflow-x: hidden;
+        }
+        
+        .app-container { width: 100%; max-width: 450px; }
+
+        header { text-align: center; margin-bottom: 25px; }
+        .neon-text { color: #ff0000; font-size: 2.2rem; text-shadow: 0 0 15px #ff0000; margin: 0; transition: 0.5s; }
+        .sub-title { color: #444; letter-spacing: 3px; font-size: 0.7rem; margin-top: 5px; }
+
+        .screen { 
+            display: none; opacity: 0; transform: translateY(15px); 
+            transition: opacity 0.4s ease, transform 0.4s ease; 
+        }
+        .screen.active { display: block; opacity: 1; transform: translateY(0); }
+
+        .vip-sub-fade { animation: subFadeIn 0.4s ease forwards; }
+        @keyframes subFadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card { 
+            background: #111; border: 1px solid #222; border-radius: 15px; 
+            padding: 20px; margin-bottom: 12px; cursor: pointer; text-align: center; transition: 0.2s;
         }
         .card:active { transform: scale(0.96); }
         
@@ -77,7 +113,70 @@
 
         <div id="main-menu" class="screen active">
             <div class="card" onclick="showScreen('blacklist-screen')">
-                <                        <span class="m-rank">Little×Star / A•L×Star</span>
+                <div style="font-size: 24px;">🚫</div>
+                <h2>ЧЕРНЫЙ СПИСОК</h2>
+                <p style="color: #555; font-size: 0.7rem;">ПРОВЕРКА ИГРОКА</p>
+            </div>
+            
+            <div id="vip-card-main" class="card card-vip" onclick="showScreen('vip-screen')">
+                <div style="font-size: 24px;">👑</div>
+                <h2 id="vip-label">VIP</h2>
+                <p id="vip-sub" class="vip-subtext">ДЛЯ КЛАНА</p>
+            </div>
+
+            <div class="card" onclick="openContact()">
+                <div style="font-size: 24px;">📝</div>
+                <h2>ВСТУПИТЬ</h2>
+                <p style="color: #555; font-size: 0.7rem;">ЛИДЕРУ В ЛС</p>
+            </div>
+        </div>
+
+        <div id="blacklist-screen" class="screen">
+            <h3 style="text-align: center; color: #ff0000; margin-bottom: 20px;">ID СКАНЕР</h3>
+            <input type="number" id="idInput" placeholder="ВВЕДИТЕ ID ИГРОКА...">
+            <button id="checkBtn" class="action-btn" onclick="checkID()">ПРОВЕРИТЬ БАЗУ</button>
+            <div id="loader" class="loader"></div>
+            <div id="check-res" style="text-align: center; margin-top: 30px; font-weight: bold; font-size: 1.1rem;"></div>
+        </div>
+
+        <div id="vip-screen" class="screen">
+            <div id="vip-auth">
+                <h3 style="text-align: center; color: #ffd700; margin-bottom: 20px;">АКТИВАЦИЯ</h3>
+                <input type="text" id="vipKey" placeholder="ВВЕДИТЕ КЛЮЧ">
+                <button class="action-btn" style="background:#ffd700; color:#000;" onclick="tryVip()">ВОЙТИ</button>
+            </div>
+
+            <div id="vip-members" class="hidden">
+                <div class="status-box">ALL STAR DATABASE: ONLINE</div>
+                
+                <div id="vip-main-nav">
+                    <div class="vip-menu-btn" onclick="showVipSub('vip-list-sub')">👥 УЧАСТНИКИ</div>
+                    <div class="vip-menu-btn" onclick="showVipSub('vip-rules-sub')">📜 ПРАВИЛА</div>
+                </div>
+
+                <div id="vip-list-sub" class="hidden">
+                    <div class="vip-section-title">Список состава</div>
+                    <div class="vip-content-block">
+                        <span class="m-rank">ALL×STAR УПРАВЛЕНИЕ</span>
+                        <div class="member-row"><span class="m-name">N1nja</span> <span class="m-id">1649095</span></div>
+                        
+                        <div style="height: 15px;"></div>
+                        <span class="m-rank">A•W×Star / A•WAR×Star ОСНОВА</span>
+                        <div class="member-row"><span class="m-name">Богдан/одиночка</span> <span class="m-id">6085692</span></div>
+                        <div class="member-row"><span class="m-name">MR•NAKAUT</span> <span class="m-id">5786825</span></div>
+                        <div class="member-row"><span class="m-name">MoonDeity</span> <span class="m-id">15386085</span></div>
+                        <div class="member-row"><span class="m-name">MURZOVICH</span> <span class="m-id">4428424</span></div>
+                        <div class="member-row"><span class="m-name">¾OrTeMoN√⁶⁹</span> <span class="m-id">4451372</span></div>
+                        <div class="member-row"><span class="m-name">Whiskas</span> <span class="m-id">8297565</span></div>
+                        <div class="member-row"><span class="m-name">Artz</span> <span class="m-id">4235225</span></div>
+                        <div class="member-row"><span class="m-name">HOMKA</span> <span class="m-id">1852491</span></div>
+                        <div class="member-row"><span class="m-name">MURZOVNA</span> <span class="m-id">4343561</span></div>
+                        <div class="member-row"><span class="m-name">BOSS•OLEGRO</span> <span class="m-id">5342294</span></div>
+                        <div class="member-row"><span class="m-name">DAVID</span> <span class="m-id">13983900</span></div>
+                        <div class="member-row"><span class="m-name">VinniПУХ</span> <span class="m-id">17819485</span></div>
+
+                        <div style="height: 15px;"></div>
+                        <span class="m-rank">Little×Star / A•L×Star</span>
                         <div class="member-row"><span class="m-name">kiwi</span> <span class="m-id">6626124</span></div>
                         <div class="member-row"><span class="m-name">Degro</span> <span class="m-id">5961143</span></div>
                         <div class="member-row"><span class="m-name">Navi1tapp</span> <span class="m-id">7425990</span></div>
@@ -218,6 +317,8 @@
     </script>
 </body>
 </html>
+
+
 
 
 
