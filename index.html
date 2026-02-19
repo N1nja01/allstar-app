@@ -19,7 +19,7 @@
         .neon-text { color: #ff0000; font-size: 2.2rem; text-shadow: 0 0 15px #ff0000; margin: 0; transition: 0.5s; }
         .sub-title { color: #444; letter-spacing: 3px; font-size: 0.7rem; margin-top: 5px; }
 
-        /* Анимации экранов */
+        /* Анимация основных экранов */
         .screen { 
             display: none; 
             opacity: 0; 
@@ -32,7 +32,7 @@
             transform: translateY(0); 
         }
 
-        /* Новая анимация для подразделов VIP */
+        /* Анимация для подразделов VIP */
         .vip-sub-fade {
             animation: subFadeIn 0.4s ease forwards;
         }
@@ -156,11 +156,27 @@
                     <div class="vip-content-block">
                         <span class="m-rank">ALL×STAR УПРАВЛЕНИЕ</span>
                         <div class="member-row"><span class="m-name">N1nja</span> <span class="m-id">1649095</span></div>
+                        
                         <div style="height: 15px;"></div>
-                        <span class="m-rank">A•W×Star ОСНОВА</span>
-                        <div class="member-row"><span class="m-name">Богдан</span> <span class="m-id">6085692</span></div>
+                        <span class="m-rank">A•W×Star / A•WAR×Star ОСНОВА</span>
+                        <div class="member-row"><span class="m-name">Богдан/одиночка</span> <span class="m-id">6085692</span></div>
                         <div class="member-row"><span class="m-name">MR•NAKAUT</span> <span class="m-id">5786825</span></div>
                         <div class="member-row"><span class="m-name">MoonDeity</span> <span class="m-id">15386085</span></div>
+                        <div class="member-row"><span class="m-name">MURZOVICH</span> <span class="m-id">4428424</span></div>
+                        <div class="member-row"><span class="m-name">¾OrTeMoN√⁶⁹</span> <span class="m-id">4451372</span></div>
+                        <div class="member-row"><span class="m-name">Whiskas</span> <span class="m-id">8297565</span></div>
+                        <div class="member-row"><span class="m-name">Artz</span> <span class="m-id">4235225</span></div>
+                        <div class="member-row"><span class="m-name">HOMKA</span> <span class="m-id">1852491</span></div>
+                        <div class="member-row"><span class="m-name">MURZOVNA</span> <span class="m-id">4343561</span></div>
+                        <div class="member-row"><span class="m-name">BOSS•OLEGRO</span> <span class="m-id">5342294</span></div>
+                        <div class="member-row"><span class="m-name">DAVID</span> <span class="m-id">13983900</span></div>
+                        <div class="member-row"><span class="m-name">VinniПУХ</span> <span class="m-id">17819485</span></div>
+
+                        <div style="height: 15px;"></div>
+                        <span class="m-rank">Little×Star / A•L×Star</span>
+                        <div class="member-row"><span class="m-name">kiwi</span> <span class="m-id">6626124</span></div>
+                        <div class="member-row"><span class="m-name">Degro</span> <span class="m-id">5961143</span></div>
+                        <div class="member-row"><span class="m-name">Navi1tapp</span> <span class="m-id">7425990</span></div>
                     </div>
                     <button class="action-btn" style="background:#333; font-size:0.7rem;" onclick="closeVipSub()">Назад к меню</button>
                 </div>
@@ -229,7 +245,6 @@
 
         tg.BackButton.onClick(goBack);
 
-        // Улучшенная логика под-меню в VIP с анимацией
         function showVipSub(subId) {
             tg.HapticFeedback.impactOccurred('medium');
             const mainNav = document.getElementById('vip-main-nav');
