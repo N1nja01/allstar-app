@@ -7,172 +7,123 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* БАЗОВЫЕ СТИЛИ */
         body { 
-            background-color: #080808; 
-            color: #ffffff; 
-            font-family: 'Orbitron', sans-serif; 
-            margin: 0; 
-            display: flex; 
-            justify-content: center; 
-            padding: 20px; 
-            min-height: 100vh; 
-            box-sizing: border-box; 
-            overflow-x: hidden; 
+            background-color: #080808; color: #ffffff; font-family: 'Orbitron', sans-serif; 
+            margin: 0; padding: 20px; min-height: 100vh; box-sizing: border-box; 
+            overflow-x: hidden; display: flex; justify-content: center;
         }
         
         .app-container { width: 100%; max-width: 450px; position: relative; }
 
-        /* АНИМАЦИЯ ПОЯВЛЕНИЯ ЭКРАНОВ */
-        @keyframes fadeInSlide {
-            from { opacity: 0; transform: translateY(15px) scale(0.98); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
+        /* Контейнер для экранов с фиксированной высотой, чтобы не было прыжков */
+        .screens-wrapper { position: relative; width: 100%; min-height: 80vh; }
+
+        .screen {
+            position: absolute; width: 100%; top: 0; left: 0;
+            opacity: 0; visibility: hidden; pointer-events: none;
+            transform: translateY(10px) scale(0.98);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .screen-active {
-            animation: fadeInSlide 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        /* Активный экран */
+        .screen.active {
+            opacity: 1; visibility: visible; pointer-events: auto;
+            transform: translateY(0) scale(1);
         }
 
-        /* ШАПКА И ТЕКСТ */
-        header { margin-bottom: 30px; text-align: center; }
-        
+        /* Шапка */
+        header { text-align: center; margin-bottom: 30px; transition: 0.3s; }
         .neon-text { 
-            color: #ff0000; 
-            font-size: 2.5rem; 
-            text-shadow: 0 0 15px #ff0000; 
-            margin: 0; 
+            color: #ff0000; font-size: 2.2rem; text-shadow: 0 0 15px #ff0000; margin: 0; 
             animation: neonPulse 2s infinite alternate;
         }
+        @keyframes neonPulse { from { opacity: 0.8; } to { opacity: 1; text-shadow: 0 0 25px #ff0000; } }
+        .sub-title { color: #555; letter-spacing: 3px; font-size: 0.7rem; }
 
-        @keyframes neonPulse {
-            from { text-shadow: 0 0 10px #ff0000; }
-            to { text-shadow: 0 0 25px #ff0000, 0 0 10px #ff0000; }
-        }
-
-        .sub-title { color: #666; letter-spacing: 3px; font-size: 0.7rem; margin-top: 5px; }
-
-        /* НАВИГАЦИЯ */
-        .back-nav { 
-            display: flex; align-items: center; margin-bottom: 20px; 
-            cursor: pointer; color: #ff0000; font-weight: bold; 
-            transition: 0.3s; width: fit-content; text-transform: uppercase; font-size: 0.8rem; 
-        }
-        .back-nav:active { opacity: 0.5; transform: translateX(-5px); }
-
-        /* КАРТОЧКИ И КНОПКИ */
+        /* Кнопки и Карточки */
         .card { 
-            background: linear-gradient(145deg, #1a1a1a, #121212); 
-            border: 1px solid #333; border-radius: 20px; padding: 20px; 
-            margin-top: 15px; cursor: pointer; text-align: center; 
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+            background: linear-gradient(145deg, #151515, #0d0d0d); 
+            border: 1px solid #222; border-radius: 18px; padding: 20px; 
+            margin-bottom: 15px; cursor: pointer; text-align: center; 
+            transition: 0.3s;
         }
-        
-        .card:active { 
-            border-color: #ff0000; 
-            transform: scale(0.96); 
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.2); 
-        }
-
-        .card-vip { border: 1px solid #ffd700; background: linear-gradient(145deg, #1a1a00, #121200); }
-        .card-vip h2 { color: #ffd700; text-shadow: 0 0 10px #ffd700; }
-
-        .icon { font-size: 40px; margin-bottom: 10px; }
+        .card:active { transform: scale(0.95); border-color: #ff0000; box-shadow: 0 0 15px rgba(255,0,0,0.2); }
+        .card-vip { border: 1px solid #ffd700; }
+        .card-vip h2 { color: #ffd700; }
 
         input { 
-            background: #151515; border: 1px solid #444; padding: 15px; 
-            color: white; border-radius: 10px; font-family: 'Orbitron'; 
-            outline: none; width: 100%; box-sizing: border-box; 
-            margin-bottom: 15px; text-align: center; transition: 0.3s;
+            background: #111; border: 1px solid #333; padding: 15px; color: #fff; 
+            border-radius: 12px; font-family: 'Orbitron'; width: 100%; 
+            box-sizing: border-box; margin-bottom: 15px; text-align: center; outline: none;
         }
-        input:focus { border-color: #ff0000; box-shadow: 0 0 10px rgba(255,0,0,0.1); }
-
         .action-btn { 
-            background: #ff0000; color: white; border: none; padding: 16px; 
-            border-radius: 10px; font-weight: bold; cursor: pointer; 
-            text-transform: uppercase; font-family: 'Orbitron'; width: 100%; 
-            transition: 0.3s;
+            background: #ff0000; color: #fff; border: none; padding: 16px; 
+            border-radius: 12px; width: 100%; font-family: 'Orbitron'; font-weight: bold;
+            cursor: pointer; text-transform: uppercase; transition: 0.3s;
         }
-        .action-btn:active { transform: scale(0.98); opacity: 0.8; }
+        .action-btn:active { opacity: 0.7; transform: scale(0.98); }
 
-        /* VIP КОНТЕНТ */
-        .vip-card-mini {  
-            background: linear-gradient(135deg, #ffd700 0%, #b8860b 100%);  
-            padding: 12px; border-radius: 12px; color: #000; text-align: center; 
-            margin-top: 10px; box-shadow: 0 5px 15px rgba(255, 215, 0, 0.2);
-        }
-        .vip-only-btn {  
-            background: #fff; color: #000; border: none; padding: 18px; 
-            margin-top: 20px; border-radius: 15px; width: 100%; 
-            font-family: 'Orbitron'; font-weight: bold; cursor: pointer; text-transform: uppercase;
-            transition: 0.3s;
-        }
-
+        .back-btn { color: #ff0000; font-size: 0.8rem; cursor: pointer; margin-bottom: 20px; display: inline-block; }
+        
         .hidden { display: none !important; }
-        .reset-link { display: block; margin-top: 25px; color: #444; font-size: 0.6rem; text-decoration: underline; cursor: pointer; text-align: center; text-transform: uppercase; }
-        .members-list { background: rgba(255, 255, 255, 0.05); border-radius: 15px; padding: 40px 20px; margin-top: 20px; border: 1px dashed #333; color: #555; text-align: center; }
+        .vip-badge { background: #ffd700; color: #000; padding: 10px; border-radius: 8px; font-weight: bold; margin: 10px 0; }
     </style>
 </head>
 <body>
     <div class="app-container">
-        <header id="app-header">
+        <header id="main-header">
             <h1 class="neon-text">ALL STAR</h1>
-            <p class="sub-title">OFFICIAL CLAN APP</p>
+            <p class="sub-title">OFFICIAL CLAN SYSTEM</p>
         </header>
 
-        <div id="back-button-ui" class="back-nav hidden" onclick="showScreen('main-menu')">
-            <span>←</span> Назад
-        </div>
+        <div id="ui-back" class="back-btn hidden" onclick="showScreen('main-menu')">← НАЗАД</div>
 
-        <div id="main-menu" class="screen-active">
-            <div class="card" onclick="showScreen('blacklist-screen')">
-                <div class="icon">🚫</div>
-                <h2>Проверка ЧС</h2>
-                <p>База нарушителей</p>
-            </div>
-            
-            <div class="card card-vip" onclick="showScreen('vip-screen')">
-                <div class="icon">👑</div>
-                <h2 id="menu-vip-title">VIP Вход</h2>
-                <p id="menu-vip-subtitle">Доступ по коду</p>
-            </div>
-
-            <div class="card" onclick="handleApplyClick()">
-                <div class="icon">📝</div>
-                <h2>Подать заявку</h2>
-                <p>Лидеру в ЛС</p>
-            </div>
-        </div>
-
-        <div id="blacklist-screen" class="hidden">
-            <h2 style="text-align: center; color: #ff0000;">ПРОВЕРКА ID</h2>
-            <input type="number" placeholder="Введите ID..." id="idInput">
-            <button class="action-btn" onclick="checkID()">Проверить</button>
-            <div id="check-result" style="margin-top:25px; text-align:center; min-height: 20px;"></div>
-        </div>
-
-        <div id="vip-screen" class="hidden">
-            <div id="vip-form">
-                <h2 style="text-align: center; color: #ffd700;">АКТИВАЦИЯ VIP</h2>
-                <p style="text-align:center; font-size: 0.7rem; color: #888; margin-bottom: 20px;">Введите ваш секретный ключ</p>
-                <input type="text" placeholder="XXXX-XXXX-XXXX" id="vipCodeInput">
-                <button class="action-btn" style="background:#ffd700; color:black;" onclick="checkVipCode()">Активировать</button>
-            </div>
-            
-            <div id="vip-content" class="hidden">
-                <h2 style="text-align: center; color: #ffd700; margin-bottom: 10px;">VIP ЗОНА</h2>
-                <div class="vip-card-mini">
-                    <span style="font-size: 0.5rem; font-weight: bold; opacity: 0.7; display: block;">Статус аккаунта</span>
-                    <div style="font-weight: bold;" id="vip-type-title">АКТИВЕН</div>
+        <div class="screens-wrapper">
+            <div id="main-menu" class="screen active">
+                <div class="card" onclick="showScreen('blacklist-screen')">
+                    <div style="font-size: 30px;">🚫</div>
+                    <h2>ЧЕРНЫЙ СПИСОК</h2>
+                    <p style="color: #666; font-size: 0.8rem;">Проверка по базе ID</p>
                 </div>
-                <button class="vip-only-btn" onclick="showScreen('members-screen')">👥 Участники</button>
-                <span class="reset-link" onclick="resetVip()">Сбросить статус (тест)</span>
+                <div class="card card-vip" onclick="showScreen('vip-screen')">
+                    <div style="font-size: 30px;">👑</div>
+                    <h2 id="vip-label">VIP ДОСТУП</h2>
+                    <p style="color: #886d00; font-size: 0.8rem;">Закрытые функции</p>
+                </div>
+                <div class="card" onclick="tgAction()">
+                    <div style="font-size: 30px;">📝</div>
+                    <h2>ВСТУПИТЬ</h2>
+                    <p style="color: #666; font-size: 0.8rem;">Связь с лидером</p>
+                </div>
             </div>
-        </div>
 
-        <div id="members-screen" class="hidden">
-            <h2 style="text-align: center; color: #ffd700;">УЧАСТНИКИ</h2>
-            <div class="members-list">
-                <p>СПИСОК ВРЕМЕННО ПУСТ</p>
+            <div id="blacklist-screen" class="screen">
+                <h3 style="text-align: center; color: #ff0000;">ID СКАНЕР</h3>
+                <input type="number" id="idInput" placeholder="ENTER ID...">
+                <button class="action-btn" onclick="checkID()">ПРОВЕРИТЬ</button>
+                <div id="res" style="text-align: center; margin-top: 20px;"></div>
+            </div>
+
+            <div id="vip-screen" class="screen">
+                <div id="vip-login">
+                    <h3 style="text-align: center; color: #ffd700;">ВВОД КЛЮЧА</h3>
+                    <input type="text" id="vipCode" placeholder="XXXX-XXXX">
+                    <button class="action-btn" style="background:#ffd700; color:#000;" onclick="activateVip()">АКТИВИРОВАТЬ</button>
+                </div>
+                <div id="vip-panel" class="hidden">
+                    <div class="vip-badge" id="vip-status">STATUS: ACTIVE</div>
+                    <div class="card" style="margin-top:20px;" onclick="showScreen('members')">
+                        <h3>СПИСОК КЛАНА</h3>
+                    </div>
+                    <p onclick="resetVip()" style="text-align:center; color:#333; font-size:0.6rem; margin-top:40px; text-decoration:underline;">RESET DATA</p>
+                </div>
+            </div>
+
+            <div id="members" class="screen">
+                <h3 style="text-align: center;">УЧАСТНИКИ</h3>
+                <div style="border: 1px dashed #333; padding: 40px; text-align: center; color: #444;">
+                    DATA ENCRYPTED
+                </div>
             </div>
         </div>
     </div>
@@ -182,157 +133,82 @@
         tg.ready();
         tg.expand();
 
-        const blackListData = [10303240, 11648545, 11702640];
+        const blackList = [12345, 67890]; // Для теста
 
-        window.onload = function() {
-            checkExpiry();
-        };
-
-        function checkExpiry() {
-            const savedVip = localStorage.getItem('userVipStatus');
-            const expiryTime = localStorage.getItem('vipExpiry');
-
-            if (savedVip && expiryTime) {
-                if (Date.now() > parseInt(expiryTime)) {
-                    clearVipData();
-                } else {
-                    applyVipUI(savedVip);
-                    updateMainMenuUI(true);
-                }
-            }
-        }
-
-        function clearVipData() {
-            localStorage.removeItem('userVipStatus');
-            localStorage.removeItem('vipExpiry');
-            updateMainMenuUI(false);
-            document.getElementById('vip-content').classList.add('hidden');
-            document.getElementById('vip-form').classList.remove('hidden');
-        }
-
-        function updateMainMenuUI(isVip) {
-            const title = document.getElementById('menu-vip-title');
-            const subtitle = document.getElementById('menu-vip-subtitle');
-            if (isVip) {
-                title.innerText = "VIP АКТИВЕН";
-                subtitle.style.display = "none";
-            } else {
-                title.innerText = "VIP Вход";
-                subtitle.style.display = "block";
-            }
-        }
-
-        function showScreen(screenId) {
-            tg.HapticFeedback.impactOccurred('medium');
+        function showScreen(id) {
+            tg.HapticFeedback.impactOccurred('light');
             
-            const screens = ['main-menu', 'blacklist-screen', 'vip-screen', 'members-screen'];
-            const header = document.getElementById('app-header');
-            const backBtnUI = document.getElementById('back-button-ui');
-
-            screens.forEach(s => {
-                const el = document.getElementById(s);
-                el.classList.add('hidden');
-                el.classList.remove('screen-active');
-            });
-
-            const target = document.getElementById(screenId);
-            target.classList.remove('hidden');
+            // Убираем активный класс у всех
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             
-            // Задержка для перезапуска анимации
-            setTimeout(() => {
-                target.classList.add('screen-active');
-            }, 10);
+            // Показываем нужный
+            const target = document.getElementById(id);
+            target.classList.add('active');
 
-            if (screenId === 'main-menu') {
-                header.classList.remove('hidden');
-                backBtnUI.classList.add('hidden');
+            // Управляем шапкой и кнопкой назад
+            const header = document.getElementById('main-header');
+            const back = document.getElementById('ui-back');
+
+            if (id === 'main-menu') {
+                header.style.opacity = "1";
+                back.classList.add('hidden');
                 tg.BackButton.hide();
-                checkExpiry();
             } else {
-                header.classList.add('hidden');
-                backBtnUI.classList.remove('hidden');
+                header.style.opacity = "0.3";
+                back.classList.remove('hidden');
                 tg.BackButton.show();
             }
         }
 
-        tg.BackButton.onClick(() => {
-            if (!document.getElementById('members-screen').classList.contains('hidden')) {
-                showScreen('vip-screen');
-            } else {
-                showScreen('main-menu');
-            }
-        });
+        tg.BackButton.onClick(() => showScreen('main-menu'));
 
         function checkID() {
-            const idInput = document.getElementById('idInput');
-            const id = parseInt(idInput.value);
-            const res = document.getElementById('check-result');
-            
-            if (!id) {
-                res.innerHTML = "Введите корректный ID";
-                return;
+            const val = document.getElementById('idInput').value;
+            const res = document.getElementById('res');
+            if(!val) return;
+
+            if(blackList.includes(parseInt(val))) {
+                res.innerHTML = "<b style='color:red'>WARNING: BLACKLIST</b>";
+                tg.HapticFeedback.notificationOccurred('error');
+            } else {
+                res.innerHTML = "<b style='color:green'>CLEAN: ACCESS GRANTED</b>";
+                tg.HapticFeedback.notificationOccurred('success');
             }
-
-            // Плавное появление результата
-            res.style.opacity = "0";
-            setTimeout(() => {
-                if (blackListData.includes(id)) {
-                    res.innerHTML = "<span style='color:#ff4444; text-shadow: 0 0 10px rgba(255,0,0,0.5)'>⚠️ В ЧЕРНОМ СПИСКЕ!</span>";
-                    tg.HapticFeedback.notificationOccurred('error');
-                } else {
-                    res.innerHTML = "<span style='color:#00ff00; text-shadow: 0 0 10px rgba(0,255,0,0.5)'>✅ ИГРОК ЧИСТ</span>";
-                    tg.HapticFeedback.notificationOccurred('success');
-                }
-                res.style.opacity = "1";
-                res.style.transition = "0.3s";
-            }, 100);
         }
 
-        function applyVipUI(statusText) {
-            document.getElementById('vip-type-title').innerText = statusText;
-            document.getElementById('vip-content').classList.remove('hidden');
-            document.getElementById('vip-form').classList.add('hidden');
-        }
-
-        function checkVipCode() {
-            const code = document.getElementById('vipCodeInput').value.trim().toUpperCase();
-            let status = "";
-            let duration = 0;
-
-            const codes = {
-                "TEST1MIN": ["ТЕСТ: 1 МИНУТА", 60000],
-                "VIP1DAY": ["АКТИВЕН: 1 ДЕНЬ", 86400000],
-                "VIP7DAY": ["АКТИВЕН: 7 ДНЕЙ", 604800000],
-                "ULTIMATE": ["АКТИВЕН: НАВСЕГДА 👑", 315360000000]
-            };
-
-            if (codes[code]) {
-                [status, duration] = codes[code];
-                const expiryDate = Date.now() + duration;
-                localStorage.setItem('userVipStatus', status);
-                localStorage.setItem('vipExpiry', expiryDate.toString());
-                
-                applyVipUI(status);
-                updateMainMenuUI(true);
+        function activateVip() {
+            const code = document.getElementById('vipCode').value.toUpperCase();
+            if(code === 'ADMIN' || code === 'VIP100') {
+                localStorage.setItem('clan_vip', 'ACTIVE');
+                renderVip(true);
                 tg.HapticFeedback.notificationOccurred('success');
             } else {
-                tg.showAlert("Неверный код активации!");
-                tg.HapticFeedback.notificationOccurred('error');
+                tg.showAlert("INVALID KEY");
             }
         }
 
-        function handleApplyClick() {
-            tg.showPopup({
-                title: 'Вступление в клан',
-                message: 'Хотите перейти в диалог с лидером?',
-                buttons: [{id: 'ok', type: 'default', text: 'Да, написать'}, {type: 'cancel', text: 'Отмена'}]
-            }, (id) => { if(id === 'ok') tg.openTelegramLink("https://t.me/BAW_SAD"); });
+        function renderVip(active) {
+            if(active) {
+                document.getElementById('vip-login').classList.add('hidden');
+                document.getElementById('vip-panel').classList.remove('hidden');
+                document.getElementById('vip-label').innerText = "VIP ПАНЕЛЬ";
+            } else {
+                document.getElementById('vip-login').classList.remove('hidden');
+                document.getElementById('vip-panel').classList.add('hidden');
+            }
         }
 
         function resetVip() {
-            clearVipData();
+            localStorage.removeItem('clan_vip');
             location.reload();
         }
+
+        function tgAction() {
+            tg.openTelegramLink("https://t.me/BAW_SAD");
+        }
+
+        // Проверка при входе
+        if(localStorage.getItem('clan_vip')) renderVip(true);
     </script>
 </body>
 </html>
