@@ -16,28 +16,27 @@
         .app-container { width: 100%; max-width: 450px; }
 
         header { text-align: center; margin-bottom: 25px; }
-        .neon-text { color: #ff0000; font-size: 2.2rem; text-shadow: 0 0 15px #ff0000; margin: 0; transition: 0.8s; }
+        .neon-text { color: #ff0000; font-size: 2.2rem; text-shadow: 0 0 15px #ff0000; margin: 0; transition: 0.5s; }
         .sub-title { color: #444; letter-spacing: 3px; font-size: 0.7rem; margin-top: 5px; }
 
-        .screen { display: none; opacity: 0; transform: translateY(10px); transition: 0.4s ease; }
-        .screen.active { display: block; opacity: 1; transform: translateY(0); }
+        .screen { display: none; opacity: 0; transition: opacity 0.3s ease; }
+        .screen.active { display: block; opacity: 1; }
 
         .card { 
             background: #111; border: 1px solid #222; border-radius: 15px; 
-            padding: 20px; margin-bottom: 12px; cursor: pointer; text-align: center; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            padding: 20px; margin-bottom: 12px; cursor: pointer; text-align: center; transition: 0.2s;
         }
-        .card:active { transform: scale(0.95); }
         
-        .card-vip { border: 1px solid #ffd700; position: relative; overflow: hidden; }
-        .card-vip h2 { color: #ffd700; margin: 0; transition: 0.5s; }
-        .vip-subtext { color: #886d00; font-size: 0.7rem; transition: 0.5s; }
+        .card-vip { border: 1px solid #ffd700; position: relative; }
+        .card-vip h2 { color: #ffd700; margin: 0; }
+        .vip-subtext { color: #886d00; font-size: 0.7rem; }
 
-        /* Анимация вспышки */
-        .auth-flash { animation: flashAnim 0.8s ease-out forwards; }
+        /* Анимация вспышки БЕЗ черного экрана */
+        .auth-flash { animation: flashAnim 0.6s ease-out; }
         @keyframes flashAnim {
-            0% { background: #ffd700; }
-            50% { background: #fff; box-shadow: 0 0 50px #fff; }
-            100% { background: #111; }
+            0% { box-shadow: 0 0 0px #fff; }
+            50% { background: #fff; box-shadow: 0 0 40px #fff; }
+            100% { background: #111; box-shadow: 0 0 0px #fff; }
         }
 
         input { 
@@ -58,9 +57,8 @@
         .back-nav { color: #ff0000; font-size: 0.8rem; cursor: pointer; margin-bottom: 15px; display: inline-block; }
         .hidden { display: none !important; }
         
-        /* Скрываем контент VIP до конца анимации */
-        #vip-members { opacity: 0; transition: opacity 0.5s ease; }
-        #vip-members.show-content { opacity: 1; }
+        /* Контент плавно проявляется */
+        #vip-members { opacity: 1; transition: opacity 0.4s ease; }
 
         .status-box { border: 1px solid #ffd700; color: #ffd700; padding: 10px; border-radius: 8px; font-weight: bold; text-align: center; margin-bottom: 20px; font-size: 0.8rem; }
     </style>
@@ -108,7 +106,7 @@
                 <input type="text" id="vipKey" placeholder="ВВЕДИТЕ КЛЮЧ">
                 <button class="action-btn" style="background:#ffd700; color:#000;" onclick="tryVip()">ВОЙТИ</button>
             </div>
-            <div id="vip-members">
+            <div id="vip-members" class="hidden">
                 <div class="status-box">SYSTEM: ACCESS GRANTED</div>
                 <h3 style="text-align: center; margin-bottom: 15px;">СОСТАВ</h3>
                 <div id="clan-list">
@@ -130,35 +128,18 @@
 
         function showScreen(screenId) {
             tg.HapticFeedback.impactOccurred('light');
-            const currentScreen = document.querySelector('.screen.active');
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             const nextScreen = document.getElementById(screenId);
-            const header = document.querySelector('.neon-text');
+            nextScreen.classList.add('active');
+
             const backBtn = document.getElementById('ui-back');
-
-            if (currentScreen) {
-                currentScreen.style.opacity = '0';
-                currentScreen.style.transform = 'translateY(-10px)';
+            if (screenId === 'main-menu') {
+                backBtn.classList.add('hidden');
+                tg.BackButton.hide();
+            } else {
+                backBtn.classList.remove('hidden');
+                tg.BackButton.show();
             }
-
-            setTimeout(() => {
-                if (currentScreen) currentScreen.classList.remove('active');
-                nextScreen.classList.add('active');
-                
-                setTimeout(() => {
-                    nextScreen.style.opacity = '1';
-                    nextScreen.style.transform = 'translateY(0)';
-                }, 50);
-
-                if (screenId === 'main-menu') {
-                    header.style.opacity = "1";
-                    backBtn.classList.add('hidden');
-                    tg.BackButton.hide();
-                } else {
-                    header.style.opacity = "0.3";
-                    backBtn.classList.remove('hidden');
-                    tg.BackButton.show();
-                }
-            }, 200);
         }
 
         tg.BackButton.onClick(() => showScreen('main-menu'));
@@ -170,14 +151,11 @@
             const btn = document.getElementById('checkBtn');
 
             if(!val) return;
-            res.innerHTML = "";
-            btn.style.display = "none";
-            loader.style.display = "block";
+            res.innerHTML = ""; btn.style.display = "none"; loader.style.display = "block";
             tg.HapticFeedback.impactOccurred('medium');
 
             setTimeout(() => {
-                loader.style.display = "none";
-                btn.style.display = "block";
+                loader.style.display = "none"; btn.style.display = "block";
                 if(blackListData.includes(Number(val))) {
                     res.innerHTML = "<span style='color:#ff4444;'>⚠️ В ЧЕРНОМ СПИСКЕ</span>";
                     tg.HapticFeedback.notificationOccurred('error');
@@ -185,52 +163,49 @@
                     res.innerHTML = "<span style='color:#00ff00;'>✅ ИГРОК ЧИСТ</span>";
                     tg.HapticFeedback.notificationOccurred('success');
                 }
-            }, 1000);
+            }, 800);
         }
 
         function tryVip() {
             const key = document.getElementById('vipKey').value.trim().toUpperCase();
             if(key === 'ADMIN' || key === 'VIP777') {
                 tg.HapticFeedback.notificationOccurred('success');
-                
-                const vipCard = document.getElementById('vip-card-main');
-                vipCard.classList.add('auth-flash');
-
                 localStorage.setItem('clan_auth', 'true');
                 
-                // Переключаем UI и переименовываем, НО НЕ показываем контент сразу
-                toggleVipUI(true, false); 
+                // Сначала переключаем UI
+                toggleVipUI(true);
+                
+                // Мгновенно переходим на главную
+                showScreen('main-menu');
 
-                setTimeout(() => {
-                    showScreen('main-menu');
-                    // Показываем содержимое списка только ПОСЛЕ вспышки
-                    document.getElementById('vip-members').classList.add('show-content');
-                }, 800);
+                // И ТОЛЬКО ТУТ запускаем вспышку
+                const vipCard = document.getElementById('vip-card-main');
+                vipCard.classList.add('auth-flash');
+                
+                // Убираем класс анимации после завершения, чтобы можно было вызвать снова
+                setTimeout(() => vipCard.classList.remove('auth-flash'), 700);
 
             } else {
                 tg.showAlert("ОШИБКА КЛЮЧА");
-                tg.HapticFeedback.notificationOccurred('error');
             }
         }
 
-        function toggleVipUI(isVip, showContentImmediate = true) {
+        function toggleVipUI(isVip) {
             const label = document.getElementById('vip-label');
             const sub = document.getElementById('vip-sub');
             const members = document.getElementById('vip-members');
+            const auth = document.getElementById('vip-auth');
             
             if(isVip) {
-                document.getElementById('vip-auth').classList.add('hidden');
+                auth.classList.add('hidden');
+                members.classList.remove('hidden');
                 label.innerText = "ROOM ALL STAR";
                 sub.innerText = "MANAGEMENT";
                 label.style.color = "#fff";
                 label.style.textShadow = "0 0 10px #fff";
-                
-                if(showContentImmediate) {
-                    members.classList.add('show-content');
-                }
             } else {
-                document.getElementById('vip-auth').classList.remove('hidden');
-                members.classList.remove('show-content');
+                auth.classList.remove('hidden');
+                members.classList.add('hidden');
                 label.innerText = "VIP";
                 sub.innerText = "ДЛЯ КЛАНА";
                 label.style.color = "#ffd700";
@@ -247,13 +222,13 @@
             tg.openTelegramLink("https://t.me/BAW_SAD");
         }
 
-        // При загрузке страницы: если авторизован — показываем контент сразу (БЕЗ анимации)
         if(localStorage.getItem('clan_auth')) {
-            toggleVipUI(true, true);
+            toggleVipUI(true);
         }
     </script>
 </body>
 </html>
+
 
 
 
