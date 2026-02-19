@@ -25,6 +25,10 @@
         input:focus { border-color: #ff0000; }
         .action-btn { background: #ff0000; color: white; border: none; padding: 16px; border-radius: 10px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-family: 'Orbitron'; width: 100%; box-shadow: 0 4px 10px rgba(255,0,0,0.2); }
         .vip-status { margin-top: 20px; padding: 15px; border-radius: 10px; border: 1px dashed #ffd700; color: #ffd700; text-align: center; }
+        
+        /* Новые стили */
+        .secondary-btn { background: transparent; color: #ffd700; border: 1px solid #ffd700; padding: 12px; margin-top: 15px; border-radius: 10px; width: 100%; font-family: 'Orbitron'; cursor: pointer; text-transform: uppercase; font-size: 0.8rem; }
+        .members-list { background: rgba(255, 255, 255, 0.05); border-radius: 15px; padding: 30px; margin-top: 20px; border: 1px solid #333; color: #666; text-align: center; }
     </style>
 </head>
 <body>
@@ -65,12 +69,23 @@
 
         <div id="vip-screen" class="hidden">
             <h2 style="text-align: center; color: #ffd700;">АКТИВАЦИЯ VIP</h2>
-            <p style="text-align:center; font-size: 0.7rem; color: #888;">Введите ваш секретный ключ</p>
-            <input type="text" placeholder="XXXX-XXXX-XXXX" id="vipCodeInput">
-            <button class="action-btn" style="background:#ffd700; color:black;" onclick="checkVipCode()">Активировать</button>
+            <div id="vip-form">
+                <p style="text-align:center; font-size: 0.7rem; color: #888;">Введите ваш секретный ключ</p>
+                <input type="text" placeholder="XXXX-XXXX-XXXX" id="vipCodeInput">
+                <button class="action-btn" style="background:#ffd700; color:black;" onclick="checkVipCode()">Активировать</button>
+            </div>
+            
             <div id="vip-content" class="hidden vip-status">
                 <h3 id="vip-type-title">АКТИВНО</h3>
                 <p>Добро пожаловать в элитный клуб!</p>
+                <button class="secondary-btn" onclick="showScreen('members-screen')">Участники</button>
+            </div>
+        </div>
+
+        <div id="members-screen" class="hidden">
+            <h2 style="text-align: center; color: #ffd700;">СПИСОК VIP</h2>
+            <div class="members-list">
+                <p>— СПИСОК ПУСТ —</p>
             </div>
         </div>
     </div>
@@ -80,16 +95,24 @@
         tg.ready();
         tg.expand();
 
-        // База данных (замени на свою полную)
         const blackListData = [10303240, 11648545, 11702640];
+
+        // ПРОВЕРКА СОХРАНЕНИЯ ПРИ ЗАПУСКЕ
+        window.onload = function() {
+            const savedVip = localStorage.getItem('userVipStatus');
+            if (savedVip) {
+                applyVipUI(savedVip);
+            }
+        };
 
         function showScreen(screenId) {
             tg.HapticFeedback.impactOccurred('light');
-            document.getElementById('main-menu').classList.add('hidden');
-            document.getElementById('blacklist-screen').classList.add('hidden');
-            document.getElementById('vip-screen').classList.add('hidden');
-            document.getElementById('back-button-ui').classList.remove('hidden');
+            
+            // Скрываем все экраны и заголовок
+            const screens = ['main-menu', 'blacklist-screen', 'vip-screen', 'members-screen'];
+            screens.forEach(s => document.getElementById(s).classList.add('hidden'));
             document.getElementById('app-header').classList.add('hidden');
+            document.getElementById('back-button-ui').classList.remove('hidden');
 
             if (screenId === 'main-menu') {
                 document.getElementById('main-menu').classList.remove('hidden');
@@ -124,33 +147,32 @@
             }
         }
 
-        // Логика VIP кодов
+        function applyVipUI(statusText) {
+            document.getElementById('vip-type-title').innerText = statusText;
+            document.getElementById('vip-content').classList.remove('hidden');
+            document.getElementById('vip-form').classList.add('hidden');
+        }
+
         function checkVipCode() {
             const code = document.getElementById('vipCodeInput').value.trim();
-            const content = document.getElementById('vip-content');
-            const title = document.getElementById('vip-type-title');
+            let status = "";
 
-            if (code === "VIP1DAY") {
-                title.innerText = "VIP ДОСТУП: 1 ДЕНЬ";
-                content.classList.remove('hidden');
+            if (code === "VIP1DAY") status = "VIP ДОСТУП: 1 ДЕНЬ";
+            else if (code === "VIP7DAY") status = "VIP ДОСТУП: 7 ДНЕЙ";
+            else if (code === "VIP30DAY") status = "VIP ДОСТУП: 30 ДНЕЙ";
+            else if (code === "ULTIMATE") status = "VIP ДОСТУП: НАВСЕГДА 👑";
+
+            if (status !== "") {
+                localStorage.setItem('userVipStatus', status);
+                applyVipUI(status);
                 tg.HapticFeedback.notificationOccurred('success');
-            } else if (code === "VIP7DAY") {
-                title.innerText = "VIP ДОСТУП: 7 ДНЕЙ";
-                content.classList.remove('hidden');
-                tg.HapticFeedback.notificationOccurred('success');
-            } else if (code === "VIP30DAY") {
-                title.innerText = "VIP ДОСТУП: 30 ДНЕЙ";
-                content.classList.remove('hidden');
-                tg.HapticFeedback.notificationOccurred('success');
-            } else if (code === "ULTIMATE") {
-                title.innerText = "VIP ДОСТУП: НАВСЕГДА 👑";
-                content.classList.remove('hidden');
-                tg.HapticFeedback.notificationOccurred('success');
+                tg.showAlert("Доступ разрешен!");
             } else {
-                tg.showAlert("Неверный код доступа!");
-                content.classList.add('hidden');
+                tg.showAlert("Неверный код!");
+                tg.HapticFeedback.notificationOccurred('error');
             }
         }
     </script>
 </body>
 </html>
+
