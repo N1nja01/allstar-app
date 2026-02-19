@@ -19,7 +19,6 @@
         .neon-text { color: #ff0000; font-size: 2.2rem; text-shadow: 0 0 15px #ff0000; margin: 0; transition: 0.5s; }
         .sub-title { color: #444; letter-spacing: 3px; font-size: 0.7rem; margin-top: 5px; }
 
-        /* Плавные анимации появления экранов */
         .screen { 
             display: none; 
             opacity: 0; 
@@ -42,7 +41,7 @@
         .card-vip h2 { color: #ffd700; margin: 0; }
         .vip-subtext { color: #886d00; font-size: 0.7rem; }
 
-        /* Анимация вспышки VIP */
+        /* Анимация вспышки */
         .auth-flash { animation: flashAnim 0.6s ease-out; }
         @keyframes flashAnim {
             0% { box-shadow: 0 0 0px #fff; }
@@ -55,21 +54,23 @@
             border-radius: 10px; font-family: 'Orbitron'; width: 100%; box-sizing: border-box; 
             margin-bottom: 10px; text-align: center; outline: none; border: 1px solid #222;
         }
-        input:focus { border-color: #ff0000; }
 
         .action-btn { 
             background: #ff0000; color: #fff; border: none; padding: 16px; 
             border-radius: 10px; width: 100%; font-family: 'Orbitron'; font-weight: bold;
-            cursor: pointer; text-transform: uppercase; transition: 0.2s;
+            cursor: pointer; text-transform: uppercase;
         }
-        .action-btn:active { transform: scale(0.98); opacity: 0.8; }
 
         .loader { display: none; margin: 25px auto; width: 30px; height: 30px; border: 3px solid rgba(255, 0, 0, 0.2); border-radius: 50%; border-top-color: #ff0000; animation: spin 1s infinite linear; }
         @keyframes spin { to { transform: rotate(360deg); } }
         
-        .back-nav { color: #ff0000; font-size: 0.8rem; cursor: pointer; margin-bottom: 15px; display: inline-block; transition: 0.3s; }
+        .back-nav { color: #ff0000; font-size: 0.8rem; cursor: pointer; margin-bottom: 15px; display: inline-block; }
         .hidden { display: none !important; }
         
+        /* Скрываем список участников до полной готовности */
+        #vip-members { opacity: 0; transition: opacity 0.5s ease; }
+        #vip-members.ready { opacity: 1; }
+
         .status-box { border: 1px solid #ffd700; color: #ffd700; padding: 10px; border-radius: 8px; font-weight: bold; text-align: center; margin-bottom: 20px; font-size: 0.8rem; }
     </style>
 </head>
@@ -138,12 +139,10 @@
 
         function showScreen(screenId) {
             tg.HapticFeedback.impactOccurred('light');
-            
             const current = document.querySelector('.screen.active');
             const next = document.getElementById(screenId);
             const backBtn = document.getElementById('ui-back');
 
-            // Сначала гасим текущий
             if (current) {
                 current.style.opacity = "0";
                 current.style.transform = "translateY(15px)";
@@ -153,7 +152,6 @@
                 if (current) current.classList.remove('active');
                 next.classList.add('active');
                 
-                // Плавное появление нового экрана
                 setTimeout(() => {
                     next.style.opacity = "1";
                     next.style.transform = "translateY(0)";
@@ -166,7 +164,7 @@
                     backBtn.classList.remove('hidden');
                     tg.BackButton.show();
                 }
-            }, 250); // Небольшая задержка для плавности смены
+            }, 250);
         }
 
         tg.BackButton.onClick(() => showScreen('main-menu'));
@@ -199,13 +197,21 @@
                 tg.HapticFeedback.notificationOccurred('success');
                 localStorage.setItem('clan_auth', 'true');
                 
-                toggleVipUI(true);
+                // Сначала переходим на главный экран
                 showScreen('main-menu');
 
-                // Вспышка на главной после перехода
+                // Ждем пока экран сменится, потом меняем текст и запускаем вспышку
                 setTimeout(() => {
+                    toggleVipUI(true); // Теперь эта функция не показывает список участников сразу
+                    
                     const vipCard = document.getElementById('vip-card-main');
                     vipCard.classList.add('auth-flash');
+                    
+                    // Показываем контент плавно через секунду после начала вспышки
+                    setTimeout(() => {
+                        document.getElementById('vip-members').classList.add('ready');
+                    }, 400);
+
                     setTimeout(() => vipCard.classList.remove('auth-flash'), 700);
                 }, 300);
 
@@ -222,7 +228,7 @@
             
             if(isVip) {
                 auth.classList.add('hidden');
-                members.classList.remove('hidden');
+                members.classList.remove('hidden'); // Удаляем display:none, но opacity все еще 0
                 label.innerText = "ROOM ALL STAR";
                 sub.innerText = "MANAGEMENT";
                 label.style.color = "#fff";
@@ -230,6 +236,7 @@
             } else {
                 auth.classList.remove('hidden');
                 members.classList.add('hidden');
+                members.classList.remove('ready');
                 label.innerText = "VIP";
                 sub.innerText = "ДЛЯ КЛАНА";
                 label.style.color = "#ffd700";
@@ -246,12 +253,15 @@
             tg.openTelegramLink("https://t.me/BAW_SAD");
         }
 
+        // Если уже залогинен, показываем все сразу без анимаций
         if(localStorage.getItem('clan_auth')) {
             toggleVipUI(true);
+            document.getElementById('vip-members').classList.add('ready');
         }
     </script>
 </body>
 </html>
+
 
 
 
