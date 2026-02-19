@@ -16,52 +16,52 @@
         .app-container { width: 100%; max-width: 450px; }
 
         header { text-align: center; margin-bottom: 25px; }
-        .neon-text { color: #ff0000; font-size: 2.2rem; text-shadow: 0 0 15px #ff0000; margin: 0; transition: 0.5s; }
+        .neon-text { color: #ff0000; font-size: 2.2rem; text-shadow: 0 0 15px #ff0000; margin: 0; }
         .sub-title { color: #444; letter-spacing: 3px; font-size: 0.7rem; margin-top: 5px; }
 
-        /* Та самая плавная анимация */
+        /* ВОЗВРАЩЕННАЯ ПЛАВНАЯ АНИМАЦИЯ */
         .screen, .vip-sub-screen { 
             display: none; 
             opacity: 0; 
-            transform: translateY(15px); 
-            transition: opacity 0.4s ease, transform 0.4s ease; 
+            transform: translateY(20px) scale(0.98); 
+            transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); 
         }
         .active { 
             display: block !important; 
             opacity: 1 !important; 
-            transform: translateY(0) !important; 
+            transform: translateY(0) scale(1) !important; 
         }
 
         .card { 
             background: #111; border: 1px solid #222; border-radius: 15px; 
-            padding: 20px; margin-bottom: 12px; cursor: pointer; text-align: center; transition: 0.2s;
+            padding: 20px; margin-bottom: 12px; cursor: pointer; text-align: center; transition: 0.3s;
         }
-        .card:active { transform: scale(0.96); }
+        .card:active { transform: scale(0.95); background: #151515; }
         
         .card-vip { border: 1px solid #ffd700; position: relative; }
         .card-vip h2 { color: #ffd700; margin: 0; }
         .vip-subtext { color: #886d00; font-size: 0.7rem; }
 
-        .auth-flash { animation: flashAnim 0.6s ease-out; }
+        .auth-flash { animation: flashAnim 0.7s ease-out; }
         @keyframes flashAnim {
             0% { box-shadow: 0 0 0px #fff; }
-            50% { background: #fff; box-shadow: 0 0 40px #fff; }
+            50% { background: #fff; box-shadow: 0 0 50px #fff; }
             100% { background: #111; box-shadow: 0 0 0px #fff; }
         }
 
         input { 
             background: #151515; border: 1px solid #333; padding: 15px; color: #fff; 
             border-radius: 10px; font-family: 'Orbitron'; width: 100%; box-sizing: border-box; 
-            margin-bottom: 10px; text-align: center; outline: none; border: 1px solid #222;
+            margin-bottom: 10px; text-align: center; outline: none;
         }
 
         .action-btn { 
             background: #ff0000; color: #fff; border: none; padding: 16px; 
             border-radius: 10px; width: 100%; font-family: 'Orbitron'; font-weight: bold;
-            cursor: pointer; text-transform: uppercase;
+            cursor: pointer; text-transform: uppercase; transition: 0.2s;
         }
 
-        .back-nav { color: #ff0000; font-size: 0.8rem; cursor: pointer; margin-bottom: 15px; display: inline-block; }
+        .back-nav { color: #ff0000; font-size: 0.8rem; cursor: pointer; margin-bottom: 15px; display: inline-block; opacity: 0.7; }
         .hidden { display: none !important; }
         
         .status-box { border: 1px solid #ffd700; color: #ffd700; padding: 10px; border-radius: 8px; font-weight: bold; text-align: center; margin-bottom: 20px; font-size: 0.8rem; }
@@ -77,8 +77,9 @@
         .vip-menu-btn {
             background: #1a1a1a; border: 1px solid #ffd700; color: #ffd700;
             padding: 20px; border-radius: 12px; margin-bottom: 10px;
-            text-align: center; font-weight: bold; cursor: pointer; transition: 0.2s;
+            text-align: center; font-weight: bold; cursor: pointer; transition: 0.3s;
         }
+        .vip-menu-btn:active { background: #ffd700; color: #000; }
     </style>
 </head>
 <body>
@@ -189,7 +190,7 @@
 
             if (current) {
                 current.style.opacity = "0";
-                current.style.transform = "translateY(15px)";
+                current.style.transform = "translateY(20px) scale(0.98)";
             }
 
             setTimeout(() => {
@@ -197,7 +198,7 @@
                 next.classList.add('active');
                 setTimeout(() => {
                     next.style.opacity = "1";
-                    next.style.transform = "translateY(0)";
+                    next.style.transform = "translateY(0) scale(1)";
                 }, 50);
 
                 if (screenId === 'main-menu') {
@@ -207,7 +208,7 @@
                     backBtn.classList.remove('hidden');
                     tg.BackButton.show();
                 }
-            }, 250);
+            }, 350); // Увеличенная задержка для плавности
         }
 
         function goBack() {
@@ -223,17 +224,17 @@
             const nextSub = document.getElementById(subId);
 
             currentMenu.style.opacity = "0";
-            currentMenu.style.transform = "translateY(15px)";
+            currentMenu.style.transform = "translateY(20px) scale(0.98)";
 
             setTimeout(() => {
                 currentMenu.classList.remove('active');
                 nextSub.classList.add('active');
                 setTimeout(() => {
                     nextSub.style.opacity = "1";
-                    nextSub.style.transform = "translateY(0)";
+                    nextSub.style.transform = "translateY(0) scale(1)";
                     currentActiveSub = subId;
                 }, 50);
-            }, 250);
+            }, 350);
         }
 
         function closeVipSub() {
@@ -241,24 +242,24 @@
             const mainMenu = document.getElementById('vip-main-nav');
 
             currentSub.style.opacity = "0";
-            currentSub.style.transform = "translateY(15px)";
+            currentSub.style.transform = "translateY(20px) scale(0.98)";
 
             setTimeout(() => {
                 currentSub.classList.remove('active');
                 mainMenu.classList.add('active');
                 setTimeout(() => {
                     mainMenu.style.opacity = "1";
-                    mainMenu.style.transform = "translateY(0)";
+                    mainMenu.style.transform = "translateY(0) scale(1)";
                     currentActiveSub = null;
                 }, 50);
-            }, 250);
+            }, 350);
         }
 
         function checkID() {
             const val = document.getElementById('idInput').value;
             const res = document.getElementById('check-res');
             if(!val) return;
-            res.innerHTML = "ПРОЦЕСС...";
+            res.innerHTML = "SCANNING...";
             tg.HapticFeedback.impactOccurred('medium');
             setTimeout(() => {
                 if(blackListData.includes(Number(val))) {
@@ -282,7 +283,7 @@
                     const vipCard = document.getElementById('vip-card-main');
                     vipCard.classList.add('auth-flash');
                     setTimeout(() => vipCard.classList.remove('auth-flash'), 700);
-                }, 300);
+                }, 400);
             } else { tg.showAlert("ОШИБКА КЛЮЧА"); }
         }
 
