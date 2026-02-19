@@ -32,22 +32,19 @@
         .card-vip h2 { color: #ffd700; margin: 0; transition: 0.5s; }
         .vip-subtext { color: #886d00; font-size: 0.7rem; transition: 0.5s; }
 
-        /* Анимация вспышки при активации */
-        .auth-flash {
-            animation: flashAnim 0.8s ease-out;
-        }
+        /* Анимация вспышки */
+        .auth-flash { animation: flashAnim 0.8s ease-out forwards; }
         @keyframes flashAnim {
-            0% { background: #ffd700; transform: scale(1); }
-            50% { background: #fff; transform: scale(1.05); box-shadow: 0 0 30px #fff; }
-            100% { background: #111; transform: scale(1); }
+            0% { background: #ffd700; }
+            50% { background: #fff; box-shadow: 0 0 50px #fff; }
+            100% { background: #111; }
         }
 
         input { 
             background: #151515; border: 1px solid #333; padding: 15px; color: #fff; 
             border-radius: 10px; font-family: 'Orbitron'; width: 100%; box-sizing: border-box; 
-            margin-bottom: 10px; text-align: center; outline: none; transition: 0.3s;
+            margin-bottom: 10px; text-align: center; outline: none;
         }
-        input:focus { border-color: #ffd700; }
 
         .action-btn { 
             background: #ff0000; color: #fff; border: none; padding: 16px; 
@@ -60,6 +57,11 @@
         
         .back-nav { color: #ff0000; font-size: 0.8rem; cursor: pointer; margin-bottom: 15px; display: inline-block; }
         .hidden { display: none !important; }
+        
+        /* Скрываем контент VIP до конца анимации */
+        #vip-members { opacity: 0; transition: opacity 0.5s ease; }
+        #vip-members.show-content { opacity: 1; }
+
         .status-box { border: 1px solid #ffd700; color: #ffd700; padding: 10px; border-radius: 8px; font-weight: bold; text-align: center; margin-bottom: 20px; font-size: 0.8rem; }
     </style>
 </head>
@@ -106,7 +108,7 @@
                 <input type="text" id="vipKey" placeholder="ВВЕДИТЕ КЛЮЧ">
                 <button class="action-btn" style="background:#ffd700; color:#000;" onclick="tryVip()">ВОЙТИ</button>
             </div>
-            <div id="vip-members" class="hidden">
+            <div id="vip-members">
                 <div class="status-box">SYSTEM: ACCESS GRANTED</div>
                 <h3 style="text-align: center; margin-bottom: 15px;">СОСТАВ</h3>
                 <div id="clan-list">
@@ -176,7 +178,6 @@
             setTimeout(() => {
                 loader.style.display = "none";
                 btn.style.display = "block";
-
                 if(blackListData.includes(Number(val))) {
                     res.innerHTML = "<span style='color:#ff4444;'>⚠️ В ЧЕРНОМ СПИСКЕ</span>";
                     tg.HapticFeedback.notificationOccurred('error');
@@ -192,17 +193,19 @@
             if(key === 'ADMIN' || key === 'VIP777') {
                 tg.HapticFeedback.notificationOccurred('success');
                 
-                // Анимация на главном экране
                 const vipCard = document.getElementById('vip-card-main');
                 vipCard.classList.add('auth-flash');
 
                 localStorage.setItem('clan_auth', 'true');
                 
-                // Эффект перехода
+                // Переключаем UI и переименовываем, НО НЕ показываем контент сразу
+                toggleVipUI(true, false); 
+
                 setTimeout(() => {
-                    toggleVipUI(true);
                     showScreen('main-menu');
-                }, 400);
+                    // Показываем содержимое списка только ПОСЛЕ вспышки
+                    document.getElementById('vip-members').classList.add('show-content');
+                }, 800);
 
             } else {
                 tg.showAlert("ОШИБКА КЛЮЧА");
@@ -210,21 +213,24 @@
             }
         }
 
-        function toggleVipUI(isVip) {
+        function toggleVipUI(isVip, showContentImmediate = true) {
             const label = document.getElementById('vip-label');
             const sub = document.getElementById('vip-sub');
+            const members = document.getElementById('vip-members');
             
             if(isVip) {
                 document.getElementById('vip-auth').classList.add('hidden');
-                document.getElementById('vip-members').classList.remove('hidden');
-                // НОВЫЕ НАЗВАНИЯ ТУТ:
                 label.innerText = "ROOM ALL STAR";
                 sub.innerText = "MANAGEMENT";
                 label.style.color = "#fff";
                 label.style.textShadow = "0 0 10px #fff";
+                
+                if(showContentImmediate) {
+                    members.classList.add('show-content');
+                }
             } else {
                 document.getElementById('vip-auth').classList.remove('hidden');
-                document.getElementById('vip-members').classList.add('hidden');
+                members.classList.remove('show-content');
                 label.innerText = "VIP";
                 sub.innerText = "ДЛЯ КЛАНА";
                 label.style.color = "#ffd700";
@@ -241,10 +247,14 @@
             tg.openTelegramLink("https://t.me/BAW_SAD");
         }
 
-        if(localStorage.getItem('clan_auth')) toggleVipUI(true);
+        // При загрузке страницы: если авторизован — показываем контент сразу (БЕЗ анимации)
+        if(localStorage.getItem('clan_auth')) {
+            toggleVipUI(true, true);
+        }
     </script>
 </body>
 </html>
+
 
 
 
