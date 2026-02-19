@@ -15,20 +15,50 @@
         header { margin-bottom: 30px; text-align: center; }
         .neon-text { color: #ff0000; font-size: 2.5rem; text-shadow: 0 0 15px #ff0000; margin: 0; }
         .sub-title { color: #666; letter-spacing: 3px; font-size: 0.7rem; margin-top: 5px; }
+        
+        /* Карточки меню */
         .card { background: linear-gradient(145deg, #1a1a1a, #121212); border: 1px solid #333; border-radius: 20px; padding: 20px; margin-top: 15px; cursor: pointer; text-align: center; transition: 0.3s; }
         .card:active { border-color: #ff0000; transform: scale(0.95); box-shadow: 0 0 15px rgba(255, 0, 0, 0.3); }
         .card-vip { border: 1px solid #ffd700; background: linear-gradient(145deg, #1a1a00, #121200); }
         .card-vip h2 { color: #ffd700; text-shadow: 0 0 10px #ffd700; }
         .icon { font-size: 40px; margin-bottom: 10px; }
         .hidden { display: none !important; }
+
+        /* Ввод и кнопки */
         input { background: #151515; border: 1px solid #444; padding: 15px; color: white; border-radius: 10px; font-family: 'Orbitron'; outline: none; width: 100%; box-sizing: border-box; margin-bottom: 15px; text-align: center; }
         input:focus { border-color: #ff0000; }
         .action-btn { background: #ff0000; color: white; border: none; padding: 16px; border-radius: 10px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-family: 'Orbitron'; width: 100%; box-shadow: 0 4px 10px rgba(255,0,0,0.2); }
-        .vip-status { margin-top: 20px; padding: 15px; border-radius: 10px; border: 1px dashed #ffd700; color: #ffd700; text-align: center; }
         
-        /* Новые стили */
-        .secondary-btn { background: transparent; color: #ffd700; border: 1px solid #ffd700; padding: 12px; margin-top: 15px; border-radius: 10px; width: 100%; font-family: 'Orbitron'; cursor: pointer; text-transform: uppercase; font-size: 0.8rem; }
-        .members-list { background: rgba(255, 255, 255, 0.05); border-radius: 15px; padding: 30px; margin-top: 20px; border: 1px solid #333; color: #666; text-align: center; }
+        /* VIP ИНТЕРФЕЙС */
+        .vip-card-status { 
+            background: linear-gradient(135deg, #ffd700 0%, #b8860b 100%); 
+            padding: 30px; 
+            border-radius: 20px; 
+            color: #000; 
+            text-align: center; 
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2);
+            margin-top: 20px;
+        }
+        .vip-card-status h3 { margin: 0; font-size: 1.2rem; letter-spacing: 1px; }
+        .vip-card-status .status-label { font-size: 0.6rem; text-transform: uppercase; opacity: 0.7; margin-bottom: 10px; display: block; }
+        
+        .vip-only-btn { 
+            background: #fff; 
+            color: #000; 
+            border: none; 
+            padding: 18px; 
+            margin-top: 30px; 
+            border-radius: 15px; 
+            width: 100%; 
+            font-family: 'Orbitron'; 
+            font-weight: bold; 
+            cursor: pointer; 
+            text-transform: uppercase; 
+            transition: 0.3s;
+        }
+        .vip-only-btn:active { transform: scale(0.98); opacity: 0.9; }
+
+        .members-list { background: rgba(255, 255, 255, 0.05); border-radius: 15px; padding: 40px 20px; margin-top: 20px; border: 1px dashed #333; color: #555; text-align: center; font-size: 0.8rem; }
     </style>
 </head>
 <body>
@@ -68,24 +98,26 @@
         </div>
 
         <div id="vip-screen" class="hidden">
-            <h2 style="text-align: center; color: #ffd700;">АКТИВАЦИЯ VIP</h2>
             <div id="vip-form">
+                <h2 style="text-align: center; color: #ffd700;">АКТИВАЦИЯ VIP</h2>
                 <p style="text-align:center; font-size: 0.7rem; color: #888;">Введите ваш секретный ключ</p>
                 <input type="text" placeholder="XXXX-XXXX-XXXX" id="vipCodeInput">
                 <button class="action-btn" style="background:#ffd700; color:black;" onclick="checkVipCode()">Активировать</button>
             </div>
             
-            <div id="vip-content" class="hidden vip-status">
-                <h3 id="vip-type-title">АКТИВНО</h3>
-                <p>Добро пожаловать в элитный клуб!</p>
-                <button class="secondary-btn" onclick="showScreen('members-screen')">Участники</button>
+            <div id="vip-content" class="hidden">
+                <div class="vip-card-status">
+                    <span class="status-label">Статус аккаунта</span>
+                    <h3 id="vip-type-title">VIP АКТИВИРОВАН</h3>
+                </div>
+                <button class="vip-only-btn" onclick="showScreen('members-screen')">👥 Участники</button>
             </div>
         </div>
 
         <div id="members-screen" class="hidden">
-            <h2 style="text-align: center; color: #ffd700;">СПИСОК VIP</h2>
+            <h2 style="text-align: center; color: #ffd700;">УЧАСТНИКИ</h2>
             <div class="members-list">
-                <p>— СПИСОК ПУСТ —</p>
+                <p>СПИСОК ВРЕМЕННО ПУСТ</p>
             </div>
         </div>
     </div>
@@ -97,7 +129,6 @@
 
         const blackListData = [10303240, 11648545, 11702640];
 
-        // ПРОВЕРКА СОХРАНЕНИЯ ПРИ ЗАПУСКЕ
         window.onload = function() {
             const savedVip = localStorage.getItem('userVipStatus');
             if (savedVip) {
@@ -108,9 +139,9 @@
         function showScreen(screenId) {
             tg.HapticFeedback.impactOccurred('light');
             
-            // Скрываем все экраны и заголовок
             const screens = ['main-menu', 'blacklist-screen', 'vip-screen', 'members-screen'];
             screens.forEach(s => document.getElementById(s).classList.add('hidden'));
+            
             document.getElementById('app-header').classList.add('hidden');
             document.getElementById('back-button-ui').classList.remove('hidden');
 
@@ -125,13 +156,18 @@
             }
         }
 
-        tg.BackButton.onClick(() => showScreen('main-menu'));
+        tg.BackButton.onClick(() => {
+            // Если мы в участниках, возвращаемся в VIP, иначе в главное меню
+            const isInMembers = !document.getElementById('members-screen').classList.contains('hidden');
+            if (isInMembers) showScreen('vip-screen');
+            else showScreen('main-menu');
+        });
 
         function handleApplyClick() {
             tg.showPopup({
-                title: 'Набор ограничен',
-                message: 'Пишите Лидеру для вступления.',
-                buttons: [{id: 'link', type: 'default', text: 'Написать Лидеру'}, {type: 'cancel', text: 'Закрыть'}]
+                title: 'Набор в клан',
+                message: 'Для вступления необходимо связаться с лидером.',
+                buttons: [{id: 'link', type: 'default', text: 'Написать'}, {type: 'cancel', text: 'Закрыть'}]
             }, (id) => { if(id === 'link') tg.openTelegramLink("https://t.me/BAW_SAD"); });
         }
 
@@ -141,6 +177,8 @@
             if (blackListData.includes(id)) {
                 res.innerHTML = "<span style='color:#ff4444'>⚠️ В ЧЕРНОМ СПИСКЕ!</span>";
                 tg.HapticFeedback.notificationOccurred('error');
+            } else if (!id) {
+                res.innerHTML = "Введите корректный ID";
             } else {
                 res.innerHTML = "<span style='color:#00ff00'>✅ Игрок чист.</span>";
                 tg.HapticFeedback.notificationOccurred('success');
@@ -157,22 +195,22 @@
             const code = document.getElementById('vipCodeInput').value.trim();
             let status = "";
 
-            if (code === "VIP1DAY") status = "VIP ДОСТУП: 1 ДЕНЬ";
-            else if (code === "VIP7DAY") status = "VIP ДОСТУП: 7 ДНЕЙ";
-            else if (code === "VIP30DAY") status = "VIP ДОСТУП: 30 ДНЕЙ";
-            else if (code === "ULTIMATE") status = "VIP ДОСТУП: НАВСЕГДА 👑";
+            if (code === "VIP1DAY") status = "VIP: 1 ДЕНЬ";
+            else if (code === "VIP7DAY") status = "VIP: 7 ДНЕЙ";
+            else if (code === "VIP30DAY") status = "VIP: 30 ДНЕЙ";
+            else if (code === "ULTIMATE") status = "VIP: ULTIMATE 👑";
 
             if (status !== "") {
                 localStorage.setItem('userVipStatus', status);
                 applyVipUI(status);
                 tg.HapticFeedback.notificationOccurred('success');
-                tg.showAlert("Доступ разрешен!");
             } else {
-                tg.showAlert("Неверный код!");
+                tg.showAlert("Неверный код активации!");
                 tg.HapticFeedback.notificationOccurred('error');
             }
         }
     </script>
 </body>
 </html>
+
 
