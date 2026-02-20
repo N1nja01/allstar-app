@@ -107,7 +107,6 @@
         
         .rule-item { margin-bottom: 15px; line-height: 1.4; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; }
         .rule-num { color: #ffd700; font-weight: bold; margin-right: 5px; }
-        .rule-warn { color: #ff0000; font-size: 0.7rem; display: block; margin-top: 5px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -195,27 +194,11 @@
                     <div class="vip-content-block">
                         <div class="rules-container" id="rules-scroll">
                             <p style="font-size: 0.65rem; color: #ff0000; margin-top: 0;">ФОРМАТ: "НПК" (Нарушение правил клана)</p>
-                            
-                            <div class="rule-item"><span class="rule-num">1.</span> Оск/Оск род: Запрещены любые оскорбления игроков, нации и семьи. Шутки про детдом неуместны.</div>
-                            <div class="rule-item"><span class="rule-num">2.</span> Лич. Инфа: Запрещено распространять ФИО/фото/номер/адрес и соц. сети участников.</div>
-                            <div class="rule-item"><span class="rule-num">3.</span> ЗП: Запрещена пропаганда нацизма, наркотиков, алкоголя, порнографии и вредоносных ссылок.</div>
-                            <div class="rule-item"><span class="rule-num">4.</span> Попрошай: Запрещено попрошайничество. (Донат можно просить 1 раз в неделю в чате).</div>
-                            <div class="rule-item"><span class="rule-num">5.</span> Провокатор: Запрещено провоцировать нарушение правил.</div>
-                            <div class="rule-item"><span class="rule-num">6.</span> Глав/зам: Запрещено выдавать себя за руководство, разрабов или админов.</div>
-                            <div class="rule-item"><span class="rule-num">7.</span> Неадекват: Запрещены угрозы, хамство, взятки, вымогательство и шантаж.</div>
-                            <div class="rule-item"><span class="rule-num">8.</span> Агент/Предатель: Слив инфы или работа на другой клан.</div>
-                            <div class="rule-item"><span class="rule-num">9.</span> Админка: Запрещено выпрашивать админку в чатах или манипулировать админами.</div>
-                            <div class="rule-item"><span class="rule-num">10.</span> Враги: Запрещено держать в друзьях врагов клана (на усмотрение управления).</div>
-                            <div class="rule-item"><span class="rule-num">11.</span> Мошенничество: Кража акков, создание фейковых пруфов и чатов.</div>
-                            <div class="rule-item"><span class="rule-num">12.</span> Вредительство: Захват или снос чужих чатов, полученных через админку.</div>
-                            <div class="rule-item"><span class="rule-num">13.</span> Пассив: Запрещено бегать в пассивке.</div>
-                            <div class="rule-item"><span class="rule-num">14.</span> Твины: Твины не состоят в клане. Подтверждение только лично Главам. Остальные — нн.</div>
-                            <div class="rule-item"><span class="rule-num">15.</span> Слив сообщений: Запрещено выносить инфу из клановых и союзных чатов.</div>
-                            <div class="rule-item"><span class="rule-num">16.</span> Обновы: Распространение сливов обновления (на усмотрение управления).</div>
-                            <div class="rule-item"><span class="rule-num">17.</span> Тренировки: Запрещено убийство с ножей/леденцов/катан. Стримы и видео запрещены.</div>
-                            
+                            <div class="rule-item"><span class="rule-num">1.</span> Оск/Оск род: Запрещены любые оскорбления игроков, нации и семьи.</div>
+                            <div class="rule-item"><span class="rule-num">2.</span> Лич. Инфа: Запрещено распространять ФИО/фото/номер участников.</div>
+                            <div class="rule-item"><span class="rule-num">3.</span> ЗП: Запрещена пропаганда нацизма, наркотиков, алкоголя.</div>
                             <p style="font-size: 0.7rem; border-top: 1px solid #444; padding-top: 10px;">
-                                <span style="color:#ffd700;">ВАЖНО:</span> При получении доказательств — исключение БЕЗ ПРАВА ВЕРНУТЬСЯ. Прочтено — значит ознакомлен.
+                                <span style="color:#ffd700;">ВАЖНО:</span> Прочтено — значит ознакомлен.
                             </p>
                         </div>
                     </div>
@@ -250,7 +233,6 @@
             setTimeout(() => {
                 if (current) current.classList.remove('active');
                 next.classList.add('active');
-                
                 setTimeout(() => {
                     next.style.opacity = "1";
                     next.style.transform = "translateY(0)";
@@ -267,11 +249,8 @@
         }
 
         function goBack() {
-            if (currentActiveSub) {
-                closeVipSub();
-            } else {
-                showScreen('main-menu');
-            }
+            if (currentActiveSub) closeVipSub();
+            else showScreen('main-menu');
         }
 
         tg.BackButton.onClick(goBack);
@@ -280,14 +259,9 @@
             tg.HapticFeedback.impactOccurred('medium');
             const nav = document.getElementById('vip-main-nav');
             const sub = document.getElementById(subId);
-
             nav.classList.add('hidden');
             sub.classList.remove('hidden');
-            
-            setTimeout(() => {
-                sub.classList.add('fade-in');
-            }, 10);
-            
+            setTimeout(() => sub.classList.add('fade-in'), 10);
             currentActiveSub = subId;
         }
 
@@ -296,7 +270,6 @@
                 const sub = document.getElementById(currentActiveSub);
                 const nav = document.getElementById('vip-main-nav');
                 sub.classList.remove('fade-in');
-
                 setTimeout(() => {
                     sub.classList.add('hidden');
                     nav.classList.remove('hidden');
@@ -310,11 +283,9 @@
             const res = document.getElementById('check-res');
             const loader = document.getElementById('loader');
             const btn = document.getElementById('checkBtn');
-
             if(!val) return;
             res.innerHTML = ""; btn.style.display = "none"; loader.style.display = "block";
             tg.HapticFeedback.impactOccurred('medium');
-
             setTimeout(() => {
                 loader.style.display = "none"; btn.style.display = "block";
                 if(blackListData.includes(Number(val))) {
@@ -327,31 +298,57 @@
             }, 800);
         }
 
+        // --- БАЗА КЛЮЧЕЙ (30 одноразовых на 7 дней) ---
+        const weeklyKeys = [
+            'A7W-B2C-D9X', 'L4K-P0Q-M1V', 'S8T-Z6Y-H3N', 'X2R-G5F-K9L', 'J1B-N7M-P4V',
+            'C9D-W1S-X0Y', 'K4L-H8G-T3R', 'V2F-B6N-M5S', 'Q0W-P1R-T9Y', 'Z5X-D4C-V8B',
+            'N3M-J7K-L2P', 'G6H-S4T-Y9W', 'U1I-O0P-A5D', 'F8G-H2J-K4L', 'B6N-M1V-C3X',
+            'R9T-Y5U-I2O', 'S7D-F3G-H1J', 'K4L-Z9X-C2V', 'M5N-B1V-P0Q', 'L8K-J4H-G2F',
+            'D3S-A1W-Q9R', 'T5Y-U2I-O0P', 'H4G-F8D-S1A', 'X6C-V2B-N9M', 'P1Q-W5R-T0Y',
+            'Z7X-C3V-B4N', 'K2L-M9N-J5H', 'G1F-D8S-A4W', 'U0I-P2Q-W3R', 'Y6T-H5G-F4D'
+        ];
+
         function tryVip() {
             const key = document.getElementById('vipKey').value.trim();
             const now = new Date().getTime();
+            
+            // Загружаем список уже использованных ключей
+            let usedKeys = JSON.parse(localStorage.getItem('used_vip_keys') || "[]");
+
+            // Проверка на повторное использование
+            if (usedKeys.includes(key)) {
+                tg.showAlert("ЭТОТ КЛЮЧ УЖЕ БЫЛ ИСПОЛЬЗОВАН!");
+                return;
+            }
+
             let expiryTime = 0;
 
+            // 1. Проверка ключа на 1 минуту
             if (key === 'X7R2W9') {
-                expiryTime = now + 60000; // 1 минута
-            } else if (key === 'JustN1nja0506') {
-                expiryTime = now + (100 * 365 * 24 * 60 * 60 * 1000); // Навсегда
+                expiryTime = now + 60000;
+                usedKeys.push(key);
+                localStorage.setItem('used_vip_keys', JSON.stringify(usedKeys));
+            } 
+            // 2. Проверка ключей на 7 дней
+            else if (weeklyKeys.includes(key)) {
+                expiryTime = now + (7 * 24 * 60 * 60 * 1000);
+                usedKeys.push(key);
+                localStorage.setItem('used_vip_keys', JSON.stringify(usedKeys));
+            }
+            // 3. Вечный ключ админа (многоразовый для тебя)
+            else if (key === 'JustN1nja0506') {
+                expiryTime = now + (100 * 365 * 24 * 60 * 60 * 1000);
             }
 
             if (expiryTime > 0) {
                 tg.HapticFeedback.notificationOccurred('success');
                 localStorage.setItem('clan_auth_expiry', expiryTime);
                 showScreen('main-menu');
-
                 setTimeout(() => {
                     toggleVipUI(true);
                     const vipCard = document.getElementById('vip-card-main');
                     vipCard.classList.add('auth-flash');
-                    
-                    setTimeout(() => {
-                        document.getElementById('vip-members').classList.add('ready');
-                    }, 400);
-
+                    setTimeout(() => document.getElementById('vip-members').classList.add('ready'), 400);
                     setTimeout(() => vipCard.classList.remove('auth-flash'), 700);
                 }, 300);
             } else {
@@ -364,29 +361,22 @@
             const sub = document.getElementById('vip-sub');
             const members = document.getElementById('vip-members');
             const auth = document.getElementById('vip-auth');
-            
             if(isVip) {
                 auth.classList.add('hidden');
                 members.classList.remove('hidden');
                 label.innerText = "ROOM ALL STAR";
                 sub.innerText = "VIP";
-                label.style.color = "#fff";
-                label.style.textShadow = "0 0 10px #fff";
             } else {
                 auth.classList.remove('hidden');
                 members.classList.add('hidden');
-                members.classList.remove('ready');
                 label.innerText = "VIP";
                 sub.innerText = "ДЛЯ КЛАНА";
-                label.style.color = "#ffd700";
-                label.style.textShadow = "none";
             }
         }
 
         function checkAuth() {
             const expiry = localStorage.getItem('clan_auth_expiry');
             const now = new Date().getTime();
-
             if (expiry) {
                 if (now < parseInt(expiry)) {
                     toggleVipUI(true);
@@ -403,16 +393,14 @@
             location.reload();
         }
 
-        function openContact() {
-            tg.openTelegramLink("https://t.me/BAW_SAD");
-        }
+        function openContact() { tg.openTelegramLink("https://t.me/BAW_SAD"); }
 
-        // Запуск проверки при загрузке и каждые 2 секунды
         checkAuth();
         setInterval(checkAuth, 2000);
     </script>
 </body>
 </html>
+
 
 
 
