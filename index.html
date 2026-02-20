@@ -51,7 +51,7 @@
         input { 
             background: #151515; border: 1px solid #333; padding: 15px; color: #fff; 
             border-radius: 10px; font-family: 'Orbitron'; width: 100%; box-sizing: border-box; 
-            margin-bottom: 10px; text-align: center; outline: none;
+            margin-bottom: 10px; text-align: center; outline: none; border: 1px solid #222;
         }
 
         .action-btn { 
@@ -87,7 +87,6 @@
         }
         .vip-menu-btn:active { background: #ffd700; color: #000; }
 
-        /* НОВЫЕ СТИЛИ ДЛЯ АНИМАЦИИ ВНУТРИ VIP */
         .vip-sub-screen {
             opacity: 0;
             transform: translateY(15px);
@@ -97,6 +96,19 @@
             opacity: 1;
             transform: translateY(0);
         }
+
+        /* Стили для скролла правил */
+        .rules-container {
+            max-height: 60vh;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        .rules-container::-webkit-scrollbar { width: 4px; }
+        .rules-container::-webkit-scrollbar-thumb { background: #ffd700; border-radius: 10px; }
+        
+        .rule-item { margin-bottom: 15px; line-height: 1.4; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; }
+        .rule-num { color: #ffd700; font-weight: bold; margin-right: 5px; }
+        .rule-warn { color: #ff0000; font-size: 0.7rem; display: block; margin-top: 5px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -156,7 +168,6 @@
                     <div class="vip-content-block">
                         <span class="m-rank">ALL×STAR УПРАВЛЕНИЕ</span>
                         <div class="member-row"><span class="m-name">N1nja</span> <span class="m-id">1649095</span></div>
-                        
                         <div style="height: 15px;"></div>
                         <span class="m-rank">A•W×Star / A•WAR×Star ОСНОВА</span>
                         <div class="member-row"><span class="m-name">Богдан/одиночка</span> <span class="m-id">6085692</span></div>
@@ -171,7 +182,6 @@
                         <div class="member-row"><span class="m-name">BOSS•OLEGRO</span> <span class="m-id">5342294</span></div>
                         <div class="member-row"><span class="m-name">DAVID</span> <span class="m-id">13983900</span></div>
                         <div class="member-row"><span class="m-name">VinniПУХ</span> <span class="m-id">17819485</span></div>
-
                         <div style="height: 15px;"></div>
                         <span class="m-rank">Little×Star / A•L×Star</span>
                         <div class="member-row"><span class="m-name">kiwi</span> <span class="m-id">6626124</span></div>
@@ -182,11 +192,33 @@
                 </div>
 
                 <div id="vip-rules-sub" class="hidden vip-sub-screen">
-                    <div class="vip-section-title">Устав клана</div>
-                    <div class="vip-content-block" style="color:#aaa; font-size:0.8rem;">
-                        1. Уважение к соклановцам.<br>
-                        2. Активное участие в жизни клана.<br>
-                        3. Соблюдение дисциплины.
+                    <div class="vip-section-title">ЗА ЧТО МОГУТ ИСКЛЮЧИТЬ</div>
+                    <div class="vip-content-block">
+                        <div class="rules-container" id="rules-scroll">
+                            <p style="font-size: 0.65rem; color: #ff0000; margin-top: 0;">ФОРМАТ: "НПК" (Нарушение правил клана)</p>
+                            
+                            <div class="rule-item"><span class="rule-num">1.</span> Оск/Оск род: Запрещены любые оскорбления игроков, нации и семьи. Шутки про детдом неуместны.</div>
+                            <div class="rule-item"><span class="rule-num">2.</span> Лич. Инфа: Запрещено распространять ФИО/фото/номер/адрес и соц. сети участников.</div>
+                            <div class="rule-item"><span class="rule-num">3.</span> ЗП: Запрещена пропаганда нацизма, наркотиков, алкоголя, порнографии и вредоносных ссылок.</div>
+                            <div class="rule-item"><span class="rule-num">4.</span> Попрошай: Запрещено попрошайничество. (Донат можно просить 1 раз в неделю в чате).</div>
+                            <div class="rule-item"><span class="rule-num">5.</span> Провокатор: Запрещено провоцировать нарушение правил.</div>
+                            <div class="rule-item"><span class="rule-num">6.</span> Глав/зам: Запрещено выдавать себя за руководство, разрабов или админов.</div>
+                            <div class="rule-item"><span class="rule-num">7.</span> Неадекват: Запрещены угрозы, хамство, взятки, вымогательство и шантаж.</div>
+                            <div class="rule-item"><span class="rule-num">8.</span> Агент/Предатель: Слив инфы или работа на другой клан.</div>
+                            <div class="rule-item"><span class="rule-num">9.</span> Админка: Запрещено выпрашивать админку в чатах или манипулировать админами.</div>
+                            <div class="rule-item"><span class="rule-num">10.</span> Враги: Запрещено держать в друзьях врагов клана (на усмотрение управления).</div>
+                            <div class="rule-item"><span class="rule-num">11.</span> Мошенничество: Кража акков, создание фейковых пруфов и чатов.</div>
+                            <div class="rule-item"><span class="rule-num">12.</span> Вредительство: Захват или снос чужих чатов, полученных через админку.</div>
+                            <div class="rule-item"><span class="rule-num">13.</span> Пассив: Запрещено бегать в пассивке.</div>
+                            <div class="rule-item"><span class="rule-num">14.</span> Твины: Твины не состоят в клане. Подтверждение только лично Главам. Остальные — нн.</div>
+                            <div class="rule-item"><span class="rule-num">15.</span> Слив сообщений: Запрещено выносить инфу из клановых и союзных чатов.</div>
+                            <div class="rule-item"><span class="rule-num">16.</span> Обновы: Распространение сливов обновления (на усмотрение управления).</div>
+                            <div class="rule-item"><span class="rule-num">17.</span> Тренировки: Запрещено убийство с ножей/леденцов/катан. Стримы и видео запрещены.</div>
+                            
+                            <p style="font-size: 0.7rem; border-top: 1px solid #444; padding-top: 10px;">
+                                <span style="color:#ffd700;">ВАЖНО:</span> При получении доказательств — исключение БЕЗ ПРАВА ВЕРНУТЬСЯ. Прочтено — значит ознакомлен.
+                            </p>
+                        </div>
                     </div>
                     <button class="action-btn" style="background:#333; font-size:0.7rem;" onclick="closeVipSub()">Назад к меню</button>
                 </div>
@@ -245,7 +277,6 @@
 
         tg.BackButton.onClick(goBack);
 
-        // ОБНОВЛЕННАЯ ЛОГИКА ПОД-МЕНЮ В VIP (С АНИМАЦИЕЙ)
         function showVipSub(subId) {
             tg.HapticFeedback.impactOccurred('medium');
             const nav = document.getElementById('vip-main-nav');
@@ -254,7 +285,6 @@
             nav.classList.add('hidden');
             sub.classList.remove('hidden');
             
-            // Задержка 10мс нужна, чтобы браузер заметил удаление hidden перед анимацией
             setTimeout(() => {
                 sub.classList.add('fade-in');
             }, 10);
@@ -266,11 +296,8 @@
             if(currentActiveSub) {
                 const sub = document.getElementById(currentActiveSub);
                 const nav = document.getElementById('vip-main-nav');
-
-                // Сначала запускаем обратную анимацию исчезновения
                 sub.classList.remove('fade-in');
 
-                // Ждем 300мс (время анимации) и только потом скрываем блок совсем
                 setTimeout(() => {
                     sub.classList.add('hidden');
                     nav.classList.remove('hidden');
@@ -365,6 +392,7 @@
     </script>
 </body>
 </html>
+
 
 
 
