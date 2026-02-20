@@ -51,7 +51,7 @@
         input { 
             background: #151515; border: 1px solid #333; padding: 15px; color: #fff; 
             border-radius: 10px; font-family: 'Orbitron'; width: 100%; box-sizing: border-box; 
-            margin-bottom: 10px; text-align: center; outline: none; border: 1px solid #222;
+            margin-bottom: 10px; text-align: center; outline: none; 
         }
 
         .action-btn { 
@@ -87,25 +87,14 @@
         }
         .vip-menu-btn:active { background: #ffd700; color: #000; }
 
-        .vip-sub-screen {
-            opacity: 0;
-            transform: translateY(15px);
-            transition: opacity 0.4s ease, transform 0.4s ease;
-        }
-        .vip-sub-screen.fade-in {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        .vip-sub-screen { opacity: 0; transform: translateY(15px); transition: opacity 0.4s ease, transform 0.4s ease; }
+        .vip-sub-screen.fade-in { opacity: 1; transform: translateY(0); }
 
-        .rules-container {
-            max-height: 60vh;
-            overflow-y: auto;
-            padding-right: 5px;
-        }
+        .rules-container { max-height: 60vh; overflow-y: auto; padding-right: 5px; text-align: left; }
         .rules-container::-webkit-scrollbar { width: 4px; }
         .rules-container::-webkit-scrollbar-thumb { background: #ffd700; border-radius: 10px; }
         
-        .rule-item { margin-bottom: 15px; line-height: 1.4; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; }
+        .rule-item { margin-bottom: 15px; line-height: 1.4; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; font-size: 0.8rem; }
         .rule-num { color: #ffd700; font-weight: bold; margin-right: 5px; }
     </style>
 </head>
@@ -193,12 +182,30 @@
                     <div class="vip-section-title">ЗА ЧТО МОГУТ ИСКЛЮЧИТЬ</div>
                     <div class="vip-content-block">
                         <div class="rules-container" id="rules-scroll">
-                            <p style="font-size: 0.65rem; color: #ff0000; margin-top: 0;">ФОРМАТ: "НПК" (Нарушение правил клана)</p>
-                            <div class="rule-item"><span class="rule-num">1.</span> Оск/Оск род: Запрещены любые оскорбления игроков, нации и семьи.</div>
-                            <div class="rule-item"><span class="rule-num">2.</span> Лич. Инфа: Запрещено распространять ФИО/фото/номер участников.</div>
-                            <div class="rule-item"><span class="rule-num">3.</span> ЗП: Запрещена пропаганда нацизма, наркотиков, алкоголя.</div>
-                            <p style="font-size: 0.7rem; border-top: 1px solid #444; padding-top: 10px;">
-                                <span style="color:#ffd700;">ВАЖНО:</span> Прочтено — значит ознакомлен.
+                            <p style="font-size: 0.65rem; color: #ff0000; margin-top: 0; font-weight: bold;">ФОРМАТ КИКОВ: "НПК" (Нарушение правил клана)</p>
+                            
+                            <div class="rule-item">
+                                <span class="rule-num">1.</span> 
+                                <strong>Оск/Оск род:</strong> Запрещены любые оскорбления игроков, их нации, религии и семьи. Мы придерживаемся адекватного общения.
+                            </div>
+                            
+                            <div class="rule-item">
+                                <span class="rule-num">2.</span> 
+                                <strong>Личная Информация:</strong> Строго запрещено распространять ФИО, личные фотографии, адреса или номера телефонов участников без их явного согласия.
+                            </div>
+                            
+                            <div class="rule-item">
+                                <span class="rule-num">3.</span> 
+                                <strong>Запрещенная Пропаганда:</strong> В клане запрещена пропаганда нацизма, наркотических средств, алкоголя и любых других незаконных действий.
+                            </div>
+
+                            <div class="rule-item">
+                                <span class="rule-num">4.</span> 
+                                <strong>Поведение:</strong> Постоянный спам, неоправданный флуд, провокации и неадекватное поведение, мешающее комфортной игре других участников.
+                            </div>
+
+                            <p style="font-size: 0.7rem; border-top: 1px solid #444; padding-top: 10px; margin-top: 10px; color: #ccc;">
+                                <span style="color:#ffd700;">ВАЖНО:</span> Незнание правил не освобождает от ответственности. Прочтение данного раздела означает ваше полное согласие.
                             </p>
                         </div>
                     </div>
@@ -215,10 +222,8 @@
         tg.ready();
         tg.expand();
 
-        // БАЗА ЧЕРНОГО СПИСКА (140+ ID)
         const blackListData = [10303240, 11648545, 11702640, 12294615, 13087170, 13448940, 14208965, 14370070, 14694735, 14815745, 14991700, 15137275, 15208965, 15244365, 15330640, 15575720, 15847470, 16115965, 16319360, 16321645, 16393285, 16725560, 16952270, 17086755, 17399535, 17608000, 17732855, 17761345, 18979230, 19523695, 1993449, 21158260, 21926965, 21962895, 2662588, 3121685, 3371367, 3630468, 3822719, 3836656, 3878276, 3969698, 4002176, 4143088, 4177889, 4218556, 4266638, 4295673, 4378405, 4391082, 4410686, 4583263, 4665274, 4701070, 4704105, 4704781, 4816211, 4902420, 5040096, 5148078, 5206729, 5342294, 5287149, 5588738, 5705174, 5708535, 5752266, 5771145, 5788245, 5829270, 5844182, 5943167, 5947027, 5982489, 5987309, 5991183, 6027602, 6027207, 6030137, 6085692, 6092722, 6116862, 6117188, 6142792, 6155858, 6166546, 6195747, 6220279, 6238684, 6239624, 6273994, 6517659, 6569708, 6614274, 6645546, 6670243, 6706810, 6710212, 6745226, 6794424, 6892904, 6894117, 6917475, 6968280, 7076535, 7079048, 7087225, 7099198, 7186705, 7255114, 7369019, 7421627, 7411344, 7422590, 7474480, 7486355, 7534127, 7563550, 7583887, 7631943, 7728115, 7818211, 7843225, 7910826, 7910926, 7954364, 8085601, 8164037, 8208990, 8278910, 8295931, 8313783, 8325737, 8331639, 8343285, 8364791, 8396294, 8419988, 8535478, 8545833, 8741924, 8888564, 8969060, 8969584, 9003628, 9117736, 9775550, 9802790, 2819306];
 
-        // БАЗА КЛЮЧЕЙ (30 одноразовых на 7 дней)
         const weeklyKeys = [
             'A7W-B2C-D9X', 'L4K-P0Q-M1V', 'S8T-Z6Y-H3N', 'X2R-G5F-K9L', 'J1B-N7M-P4V',
             'C9D-W1S-X0Y', 'K4L-H8G-T3R', 'V2F-B6N-M5S', 'Q0W-P1R-T9Y', 'Z5X-D4C-V8B',
@@ -395,6 +400,7 @@
     </script>
 </body>
 </html>
+
 
 
 
