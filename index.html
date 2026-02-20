@@ -51,7 +51,7 @@
         input { 
             background: #151515; border: 1px solid #333; padding: 15px; color: #fff; 
             border-radius: 10px; font-family: 'Orbitron'; width: 100%; box-sizing: border-box; 
-            margin-bottom: 10px; text-align: center; outline: none; border: 1px solid #222;
+            margin-bottom: 10px; text-align: center; outline: none;
         }
 
         .action-btn { 
@@ -80,13 +80,23 @@
         .m-id { color: #666; font-family: monospace; }
         .m-rank { color: #ffd700; font-size: 0.6rem; margin-bottom: 5px; display: block; opacity: 0.7; }
 
-        /* Специальные кнопки внутри VIP */
         .vip-menu-btn {
             background: #1a1a1a; border: 1px solid #ffd700; color: #ffd700;
             padding: 20px; border-radius: 12px; margin-bottom: 10px;
             text-align: center; font-weight: bold; cursor: pointer; transition: 0.2s;
         }
         .vip-menu-btn:active { background: #ffd700; color: #000; }
+
+        /* НОВЫЕ СТИЛИ ДЛЯ АНИМАЦИИ ВНУТРИ VIP */
+        .vip-sub-screen {
+            opacity: 0;
+            transform: translateY(15px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+        .vip-sub-screen.fade-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
 </head>
 <body>
@@ -141,7 +151,7 @@
                     <div class="vip-menu-btn" onclick="showVipSub('vip-rules-sub')">📜 ПРАВИЛА</div>
                 </div>
 
-                <div id="vip-list-sub" class="hidden">
+                <div id="vip-list-sub" class="hidden vip-sub-screen">
                     <div class="vip-section-title">Список состава</div>
                     <div class="vip-content-block">
                         <span class="m-rank">ALL×STAR УПРАВЛЕНИЕ</span>
@@ -171,7 +181,7 @@
                     <button class="action-btn" style="background:#333; font-size:0.7rem;" onclick="closeVipSub()">Назад к меню</button>
                 </div>
 
-                <div id="vip-rules-sub" class="hidden">
+                <div id="vip-rules-sub" class="hidden vip-sub-screen">
                     <div class="vip-section-title">Устав клана</div>
                     <div class="vip-content-block" style="color:#aaa; font-size:0.8rem;">
                         1. Уважение к соклановцам.<br>
@@ -235,19 +245,37 @@
 
         tg.BackButton.onClick(goBack);
 
-        // Логика под-меню в VIP
+        // ОБНОВЛЕННАЯ ЛОГИКА ПОД-МЕНЮ В VIP (С АНИМАЦИЕЙ)
         function showVipSub(subId) {
             tg.HapticFeedback.impactOccurred('medium');
-            document.getElementById('vip-main-nav').classList.add('hidden');
-            document.getElementById(subId).classList.remove('hidden');
+            const nav = document.getElementById('vip-main-nav');
+            const sub = document.getElementById(subId);
+
+            nav.classList.add('hidden');
+            sub.classList.remove('hidden');
+            
+            // Задержка 10мс нужна, чтобы браузер заметил удаление hidden перед анимацией
+            setTimeout(() => {
+                sub.classList.add('fade-in');
+            }, 10);
+            
             currentActiveSub = subId;
         }
 
         function closeVipSub() {
             if(currentActiveSub) {
-                document.getElementById(currentActiveSub).classList.add('hidden');
-                document.getElementById('vip-main-nav').classList.remove('hidden');
-                currentActiveSub = null;
+                const sub = document.getElementById(currentActiveSub);
+                const nav = document.getElementById('vip-main-nav');
+
+                // Сначала запускаем обратную анимацию исчезновения
+                sub.classList.remove('fade-in');
+
+                // Ждем 300мс (время анимации) и только потом скрываем блок совсем
+                setTimeout(() => {
+                    sub.classList.add('hidden');
+                    nav.classList.remove('hidden');
+                    currentActiveSub = null;
+                }, 300);
             }
         }
 
@@ -337,6 +365,7 @@
     </script>
 </body>
 </html>
+
 
 
 
