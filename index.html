@@ -1,4 +1,197 @@
-<script>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ALL STAR CLAN</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            background-color: #080808; color: #ffffff; font-family: 'Orbitron', sans-serif; 
+            margin: 0; padding: 20px; display: flex; justify-content: center;
+            min-height: 100vh; box-sizing: border-box; overflow-x: hidden;
+        }
+        
+        .app-container { width: 100%; max-width: 450px; }
+
+        header { text-align: center; margin-bottom: 25px; }
+        .neon-text { color: #ff0000; font-size: 2.2rem; text-shadow: 0 0 15px #ff0000; margin: 0; transition: 0.5s; }
+        .sub-title { color: #444; letter-spacing: 3px; font-size: 0.7rem; margin-top: 5px; }
+
+        .screen { 
+            display: none; 
+            opacity: 0; 
+            transform: translateY(15px); 
+            transition: opacity 0.4s ease, transform 0.4s ease; 
+        }
+        .screen.active { 
+            display: block; 
+            opacity: 1; 
+            transform: translateY(0); 
+        }
+
+        .card { 
+            background: #111; border: 1px solid #222; border-radius: 15px; 
+            padding: 20px; margin-bottom: 12px; cursor: pointer; text-align: center; transition: 0.2s;
+        }
+        .card:active { transform: scale(0.96); }
+        
+        .card-vip { border: 1px solid #ffd700; position: relative; }
+        .card-vip h2 { color: #ffd700; margin: 0; }
+        .vip-subtext { color: #886d00; font-size: 0.7rem; }
+
+        .auth-flash { animation: flashAnim 0.6s ease-out; }
+        @keyframes flashAnim {
+            0% { box-shadow: 0 0 0px #fff; }
+            50% { background: #fff; box-shadow: 0 0 40px #fff; }
+            100% { background: #111; box-shadow: 0 0 0px #fff; }
+        }
+
+        input { 
+            background: #151515; border: 1px solid #333; padding: 15px; color: #fff; 
+            border-radius: 10px; font-family: 'Orbitron'; width: 100%; box-sizing: border-box; 
+            margin-bottom: 10px; text-align: center; outline: none;
+        }
+
+        .action-btn { 
+            background: #ff0000; color: #fff; border: none; padding: 16px; 
+            border-radius: 10px; width: 100%; font-family: 'Orbitron'; font-weight: bold;
+            cursor: pointer; text-transform: uppercase;
+        }
+
+        .loader { display: none; margin: 25px auto; width: 30px; height: 30px; border: 3px solid rgba(255, 0, 0, 0.2); border-radius: 50%; border-top-color: #ff0000; animation: spin 1s infinite linear; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .back-nav { color: #ff0000; font-size: 0.8rem; cursor: pointer; margin-bottom: 15px; display: inline-block; }
+        .hidden { display: none !important; }
+        
+        #vip-members { opacity: 0; transition: opacity 0.5s ease; }
+        #vip-members.ready { opacity: 1; }
+
+        .status-box { border: 1px solid #ffd700; color: #ffd700; padding: 10px; border-radius: 8px; font-weight: bold; text-align: center; margin-bottom: 20px; font-size: 0.8rem; }
+
+        .vip-section-title { color: #ffd700; font-size: 0.9rem; margin: 10px 0 15px 5px; border-left: 2px solid #ffd700; padding-left: 10px; text-transform: uppercase; letter-spacing: 1px; }
+        .vip-content-block { background: rgba(255, 255, 255, 0.03); border: 1px solid #222; padding: 15px; border-radius: 10px; margin-bottom: 20px; }
+
+        .member-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.75rem; }
+        .member-row:last-child { border-bottom: none; }
+        .m-name { color: #fff; font-weight: bold; }
+        .m-id { color: #666; font-family: monospace; }
+        .m-rank { color: #ffd700; font-size: 0.6rem; margin-bottom: 5px; display: block; opacity: 0.7; }
+
+        .vip-menu-btn {
+            background: #1a1a1a; border: 1px solid #ffd700; color: #ffd700;
+            padding: 20px; border-radius: 12px; margin-bottom: 10px;
+            text-align: center; font-weight: bold; cursor: pointer; transition: 0.2s;
+        }
+        .vip-menu-btn:active { background: #ffd700; color: #000; }
+
+        .vip-sub-screen {
+            opacity: 0;
+            transform: translateY(15px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+        .vip-sub-screen.fade-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .rules-container {
+            max-height: 60vh;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        .rules-container::-webkit-scrollbar { width: 4px; }
+        .rules-container::-webkit-scrollbar-thumb { background: #ffd700; border-radius: 10px; }
+        
+        .rule-item { margin-bottom: 15px; line-height: 1.4; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; }
+        .rule-num { color: #ffd700; font-weight: bold; margin-right: 5px; }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header id="main-header">
+            <h1 class="neon-text">ALL STAR</h1>
+            <p class="sub-title">OFFICIAL CLAN APP</p>
+        </header>
+
+        <div id="ui-back" class="back-nav hidden" onclick="goBack()">← НАЗАД</div>
+
+        <div id="main-menu" class="screen active">
+            <div class="card" onclick="showScreen('blacklist-screen')">
+                <div style="font-size: 24px;">🚫</div>
+                <h2>ЧЕРНЫЙ СПИСОК</h2>
+                <p style="color: #555; font-size: 0.7rem;">ПРОВЕРКА ИГРОКА</p>
+            </div>
+            
+            <div id="vip-card-main" class="card card-vip" onclick="showScreen('vip-screen')">
+                <div style="font-size: 24px;">👑</div>
+                <h2 id="vip-label">VIP</h2>
+                <p id="vip-sub" class="vip-subtext">ДЛЯ КЛАНА</p>
+            </div>
+
+            <div class="card" onclick="openContact()">
+                <div style="font-size: 24px;">📝</div>
+                <h2>ВСТУПИТЬ</h2>
+                <p style="color: #555; font-size: 0.7rem;">ЛИДЕРУ В ЛС</p>
+            </div>
+        </div>
+
+        <div id="blacklist-screen" class="screen">
+            <h3 style="text-align: center; color: #ff0000; margin-bottom: 20px;">ID СКАНЕР</h3>
+            <input type="number" id="idInput" placeholder="ВВЕДИТЕ ID ИГРОКА...">
+            <button id="checkBtn" class="action-btn" onclick="checkID()">ПРОВЕРИТЬ БАЗУ</button>
+            <div id="loader" class="loader"></div>
+            <div id="check-res" style="text-align: center; margin-top: 30px; font-weight: bold; font-size: 1.1rem;"></div>
+        </div>
+
+        <div id="vip-screen" class="screen">
+            <div id="vip-auth">
+                <h3 style="text-align: center; color: #ffd700; margin-bottom: 20px;">АКТИВАЦИЯ</h3>
+                <input type="text" id="vipKey" placeholder="ВВЕДИТЕ КЛЮЧ">
+                <button class="action-btn" style="background:#ffd700; color:#000;" onclick="tryVip()">ВОЙТИ</button>
+            </div>
+
+            <div id="vip-members" class="hidden">
+                <div class="status-box">SYSTEM: ACCESS GRANTED</div>
+                
+                <div id="vip-main-nav">
+                    <div class="vip-menu-btn" onclick="showVipSub('vip-list-sub')">👥 УЧАСТНИКИ</div>
+                    <div class="vip-menu-btn" onclick="showVipSub('vip-rules-sub')">📜 ПРАВИЛА</div>
+                </div>
+
+                <div id="vip-list-sub" class="hidden vip-sub-screen">
+                    <div class="vip-section-title">Список состава</div>
+                    <div class="vip-content-block">
+                        <span class="m-rank">ALL×STAR УПРАВЛЕНИЕ</span>
+                        <div class="member-row"><span class="m-name">N1nja</span> <span class="m-id">1649095</span></div>
+                        <div style="height: 15px;"></div>
+                        <span class="m-rank">A•W×Star ОСНОВА</span>
+                        <div class="member-row"><span class="m-name">Богдан/одиночка</span> <span class="m-id">6085692</span></div>
+                        <div class="member-row"><span class="m-name">MR•NAKAUT</span> <span class="m-id">5786825</span></div>
+                        <div class="member-row"><span class="m-name">MoonDeity</span> <span class="m-id">15386085</span></div>
+                    </div>
+                    <button class="action-btn" style="background:#333; font-size:0.7rem;" onclick="closeVipSub()">Назад к меню</button>
+                </div>
+
+                <div id="vip-rules-sub" class="hidden vip-sub-screen">
+                    <div class="rules-container">
+                        <div class="vip-section-title">ЗА ЧТО МОГУТ ИСКЛЮЧИТЬ</div>
+                        <div class="vip-content-block">
+                            <div class="rule-item"><span class="rule-num">1.</span> Оск/Оск род.</div>
+                            <div class="rule-item"><span class="rule-num">2.</span> Слив инфы.</div>
+                        </div>
+                    </div>
+                    <button class="action-btn" style="background:#333; font-size:0.7rem;" onclick="closeVipSub()">Назад к меню</button>
+                </div>
+
+                <p onclick="exitVip()" style="text-align:center; color:#333; font-size:0.6rem; text-decoration:underline; margin-top:40px; cursor:pointer;">ВЫЙТИ ИЗ СИСТЕМЫ</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
@@ -7,17 +200,16 @@
 
         let currentActiveSub = null;
 
-        // Функция проверки срока действия
         function checkExpiry() {
             const expiry = localStorage.getItem('clan_auth_expiry');
             if (expiry && expiry !== 'never') {
                 if (Date.now() > parseInt(expiry)) {
-                    exitVip(); // Автоматический выход, если время вышло
+                    exitVip();
                 }
             }
         }
 
-        // Запускаем фоновую проверку времени каждую секунду для точности
+        // Авто-проверка времени каждую секунду
         setInterval(checkExpiry, 1000);
 
         function showScreen(screenId) {
@@ -104,16 +296,9 @@
             const key = document.getElementById('vipKey').value.trim();
             let expiryTime = null;
 
-            // Логика ключей
-            if (key === 'JustN1nja0506') {
-                expiryTime = 'never';
-            } 
-            else if (key === 'AS-9921-XQ') {
-                expiryTime = Date.now() + (60 * 60 * 1000); // 1 час
-            }
-            else if (key === 'TEST-60SEC') {
-                expiryTime = Date.now() + (60 * 1000); // 1 минута
-            }
+            if (key === 'JustN1nja0506') expiryTime = 'never';
+            else if (key === 'AS-9921-XQ') expiryTime = Date.now() + (60 * 60 * 1000); // 1 час
+            else if (key === 'TEST-60SEC') expiryTime = Date.now() + (60 * 1000); // 1 минута
 
             if (expiryTime) {
                 tg.HapticFeedback.notificationOccurred('success');
@@ -172,6 +357,9 @@
             document.getElementById('vip-members').classList.add('ready');
         }
     </script>
+</body>
+</html>
+
 
 
 
