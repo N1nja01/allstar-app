@@ -51,7 +51,7 @@
         input { 
             background: #151515; border: 1px solid #333; padding: 15px; color: #fff; 
             border-radius: 10px; font-family: 'Orbitron'; width: 100%; box-sizing: border-box; 
-            margin-bottom: 10px; text-align: center; outline: none; 
+            margin-bottom: 10px; text-align: center; outline: none; border: 1px solid #222;
         }
 
         .action-btn { 
@@ -87,15 +87,27 @@
         }
         .vip-menu-btn:active { background: #ffd700; color: #000; }
 
-        .vip-sub-screen { opacity: 0; transform: translateY(15px); transition: opacity 0.4s ease, transform 0.4s ease; }
-        .vip-sub-screen.fade-in { opacity: 1; transform: translateY(0); }
+        .vip-sub-screen {
+            opacity: 0;
+            transform: translateY(15px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+        .vip-sub-screen.fade-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
-        .rules-container { max-height: 60vh; overflow-y: auto; padding-right: 5px; text-align: left; }
+        .rules-container {
+            max-height: 60vh;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
         .rules-container::-webkit-scrollbar { width: 4px; }
         .rules-container::-webkit-scrollbar-thumb { background: #ffd700; border-radius: 10px; }
         
-        .rule-item { margin-bottom: 15px; line-height: 1.4; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; font-size: 0.8rem; }
+        .rule-item { margin-bottom: 15px; line-height: 1.4; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; }
         .rule-num { color: #ffd700; font-weight: bold; margin-right: 5px; }
+        .rule-warn { color: #ff0000; font-size: 0.7rem; display: block; margin-top: 5px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -182,30 +194,28 @@
                     <div class="vip-section-title">ЗА ЧТО МОГУТ ИСКЛЮЧИТЬ</div>
                     <div class="vip-content-block">
                         <div class="rules-container" id="rules-scroll">
-                            <p style="font-size: 0.65rem; color: #ff0000; margin-top: 0; font-weight: bold;">ФОРМАТ КИКОВ: "НПК" (Нарушение правил клана)</p>
+                            <p style="font-size: 0.65rem; color: #ff0000; margin-top: 0;">ФОРМАТ: "НПК" (Нарушение правил клана)</p>
                             
-                            <div class="rule-item">
-                                <span class="rule-num">1.</span> 
-                                <strong>Оск/Оск род:</strong> Запрещены любые оскорбления игроков, их нации, религии и семьи. Мы придерживаемся адекватного общения.
-                            </div>
+                            <div class="rule-item"><span class="rule-num">1.</span> Оск/Оск род: Запрещены любые оскорбления игроков, нации и семьи. Шутки про детдом неуместны.</div>
+                            <div class="rule-item"><span class="rule-num">2.</span> Лич. Инфа: Запрещено распространять ФИО/фото/номер/адрес и соц. сети участников.</div>
+                            <div class="rule-item"><span class="rule-num">3.</span> ЗП: Запрещена пропаганда нацизма, наркотиков, алкоголя, порнографии и вредоносных ссылок.</div>
+                            <div class="rule-item"><span class="rule-num">4.</span> Попрошай: Запрещено попрошайничество. (Донат можно просить 1 раз в неделю в чате).</div>
+                            <div class="rule-item"><span class="rule-num">5.</span> Провокатор: Запрещено провоцировать нарушение правил.</div>
+                            <div class="rule-item"><span class="rule-num">6.</span> Глав/зам: Запрещено выдавать себя за руководство, разрабов или админов.</div>
+                            <div class="rule-item"><span class="rule-num">7.</span> Неадекват: Запрещены угрозы, хамство, взятки, вымогательство и шантаж.</div>
+                            <div class="rule-item"><span class="rule-num">8.</span> Агент/Предатель: Слив инфы или работа на другой клан.</div>
+                            <div class="rule-item"><span class="rule-num">9.</span> Админка: Запрещено выпрашивать админку в чатах или манипулировать админами.</div>
+                            <div class="rule-item"><span class="rule-num">10.</span> Враги: Запрещено держать в друзьях врагов клана (на усмотрение управления).</div>
+                            <div class="rule-item"><span class="rule-num">11.</span> Мошенничество: Кража акков, создание фейковых пруфов и чатов.</div>
+                            <div class="rule-item"><span class="rule-num">12.</span> Вредительство: Захват или снос чужих чатов, полученных через админку.</div>
+                            <div class="rule-item"><span class="rule-num">13.</span> Пассив: Запрещено бегать в пассивке.</div>
+                            <div class="rule-item"><span class="rule-num">14.</span> Твины: Твины не состоят в клане. Подтверждение только лично Главам. Остальные — нн.</div>
+                            <div class="rule-item"><span class="rule-num">15.</span> Слив сообщений: Запрещено выносить инфу из клановых и союзных чатов.</div>
+                            <div class="rule-item"><span class="rule-num">16.</span> Обновы: Распространение сливов обновления (на усмотрение управления).</div>
+                            <div class="rule-item"><span class="rule-num">17.</span> Тренировки: Запрещено убийство с ножей/леденцов/катан. Стримы и видео запрещены.</div>
                             
-                            <div class="rule-item">
-                                <span class="rule-num">2.</span> 
-                                <strong>Личная Информация:</strong> Строго запрещено распространять ФИО, личные фотографии, адреса или номера телефонов участников без их явного согласия.
-                            </div>
-                            
-                            <div class="rule-item">
-                                <span class="rule-num">3.</span> 
-                                <strong>Запрещенная Пропаганда:</strong> В клане запрещена пропаганда нацизма, наркотических средств, алкоголя и любых других незаконных действий.
-                            </div>
-
-                            <div class="rule-item">
-                                <span class="rule-num">4.</span> 
-                                <strong>Поведение:</strong> Постоянный спам, неоправданный флуд, провокации и неадекватное поведение, мешающее комфортной игре других участников.
-                            </div>
-
-                            <p style="font-size: 0.7rem; border-top: 1px solid #444; padding-top: 10px; margin-top: 10px; color: #ccc;">
-                                <span style="color:#ffd700;">ВАЖНО:</span> Незнание правил не освобождает от ответственности. Прочтение данного раздела означает ваше полное согласие.
+                            <p style="font-size: 0.7rem; border-top: 1px solid #444; padding-top: 10px;">
+                                <span style="color:#ffd700;">ВАЖНО:</span> При получении доказательств — исключение БЕЗ ПРАВА ВЕРНУТЬСЯ. Прочтено — значит ознакомлен.
                             </p>
                         </div>
                     </div>
@@ -224,15 +234,6 @@
 
         const blackListData = [10303240, 11648545, 11702640, 12294615, 13087170, 13448940, 14208965, 14370070, 14694735, 14815745, 14991700, 15137275, 15208965, 15244365, 15330640, 15575720, 15847470, 16115965, 16319360, 16321645, 16393285, 16725560, 16952270, 17086755, 17399535, 17608000, 17732855, 17761345, 18979230, 19523695, 1993449, 21158260, 21926965, 21962895, 2662588, 3121685, 3371367, 3630468, 3822719, 3836656, 3878276, 3969698, 4002176, 4143088, 4177889, 4218556, 4266638, 4295673, 4378405, 4391082, 4410686, 4583263, 4665274, 4701070, 4704105, 4704781, 4816211, 4902420, 5040096, 5148078, 5206729, 5342294, 5287149, 5588738, 5705174, 5708535, 5752266, 5771145, 5788245, 5829270, 5844182, 5943167, 5947027, 5982489, 5987309, 5991183, 6027602, 6027207, 6030137, 6085692, 6092722, 6116862, 6117188, 6142792, 6155858, 6166546, 6195747, 6220279, 6238684, 6239624, 6273994, 6517659, 6569708, 6614274, 6645546, 6670243, 6706810, 6710212, 6745226, 6794424, 6892904, 6894117, 6917475, 6968280, 7076535, 7079048, 7087225, 7099198, 7186705, 7255114, 7369019, 7421627, 7411344, 7422590, 7474480, 7486355, 7534127, 7563550, 7583887, 7631943, 7728115, 7818211, 7843225, 7910826, 7910926, 7954364, 8085601, 8164037, 8208990, 8278910, 8295931, 8313783, 8325737, 8331639, 8343285, 8364791, 8396294, 8419988, 8535478, 8545833, 8741924, 8888564, 8969060, 8969584, 9003628, 9117736, 9775550, 9802790, 2819306];
 
-        const weeklyKeys = [
-            'A7W-B2C-D9X', 'L4K-P0Q-M1V', 'S8T-Z6Y-H3N', 'X2R-G5F-K9L', 'J1B-N7M-P4V',
-            'C9D-W1S-X0Y', 'K4L-H8G-T3R', 'V2F-B6N-M5S', 'Q0W-P1R-T9Y', 'Z5X-D4C-V8B',
-            'N3M-J7K-L2P', 'G6H-S4T-Y9W', 'U1I-O0P-A5D', 'F8G-H2J-K4L', 'B6N-M1V-C3X',
-            'R9T-Y5U-I2O', 'S7D-F3G-H1J', 'K4L-Z9X-C2V', 'M5N-B1V-P0Q', 'L8K-J4H-G2F',
-            'D3S-A1W-Q9R', 'T5Y-U2I-O0P', 'H4G-F8D-S1A', 'X6C-V2B-N9M', 'P1Q-W5R-T0Y',
-            'Z7X-C3V-B4N', 'K2L-M9N-J5H', 'G1F-D8S-A4W', 'U0I-P2Q-W3R', 'Y6T-H5G-F4D'
-        ];
-
         let currentActiveSub = null;
 
         function showScreen(screenId) {
@@ -249,6 +250,7 @@
             setTimeout(() => {
                 if (current) current.classList.remove('active');
                 next.classList.add('active');
+                
                 setTimeout(() => {
                     next.style.opacity = "1";
                     next.style.transform = "translateY(0)";
@@ -265,8 +267,11 @@
         }
 
         function goBack() {
-            if (currentActiveSub) closeVipSub();
-            else showScreen('main-menu');
+            if (currentActiveSub) {
+                closeVipSub();
+            } else {
+                showScreen('main-menu');
+            }
         }
 
         tg.BackButton.onClick(goBack);
@@ -275,9 +280,14 @@
             tg.HapticFeedback.impactOccurred('medium');
             const nav = document.getElementById('vip-main-nav');
             const sub = document.getElementById(subId);
+
             nav.classList.add('hidden');
             sub.classList.remove('hidden');
-            setTimeout(() => sub.classList.add('fade-in'), 10);
+            
+            setTimeout(() => {
+                sub.classList.add('fade-in');
+            }, 10);
+            
             currentActiveSub = subId;
         }
 
@@ -286,6 +296,7 @@
                 const sub = document.getElementById(currentActiveSub);
                 const nav = document.getElementById('vip-main-nav');
                 sub.classList.remove('fade-in');
+
                 setTimeout(() => {
                     sub.classList.add('hidden');
                     nav.classList.remove('hidden');
@@ -299,9 +310,11 @@
             const res = document.getElementById('check-res');
             const loader = document.getElementById('loader');
             const btn = document.getElementById('checkBtn');
+
             if(!val) return;
             res.innerHTML = ""; btn.style.display = "none"; loader.style.display = "block";
             tg.HapticFeedback.impactOccurred('medium');
+
             setTimeout(() => {
                 loader.style.display = "none"; btn.style.display = "block";
                 if(blackListData.includes(Number(val))) {
@@ -315,42 +328,24 @@
         }
 
         function tryVip() {
-            const key = document.getElementById('vipKey').value.trim();
-            const now = new Date().getTime();
-            let usedKeys = JSON.parse(localStorage.getItem('used_vip_keys') || "[]");
-
-            if (usedKeys.includes(key)) {
-                tg.showAlert("ЭТОТ КЛЮЧ УЖЕ БЫЛ ИСПОЛЬЗОВАН!");
-                return;
-            }
-
-            let expiryTime = 0;
-
-            if (key === 'X7R2W9') {
-                expiryTime = now + 60000;
-                usedKeys.push(key);
-                localStorage.setItem('used_vip_keys', JSON.stringify(usedKeys));
-            } 
-            else if (weeklyKeys.includes(key)) {
-                expiryTime = now + (7 * 24 * 60 * 60 * 1000);
-                usedKeys.push(key);
-                localStorage.setItem('used_vip_keys', JSON.stringify(usedKeys));
-            }
-            else if (key === 'JustN1nja0506') {
-                expiryTime = now + (100 * 365 * 24 * 60 * 60 * 1000);
-            }
-
-            if (expiryTime > 0) {
+            const key = document.getElementById('vipKey').value.trim().toUpperCase();
+            if(key === 'ADMIN' || key === 'VIP777') {
                 tg.HapticFeedback.notificationOccurred('success');
-                localStorage.setItem('clan_auth_expiry', expiryTime);
+                localStorage.setItem('clan_auth', 'true');
                 showScreen('main-menu');
+
                 setTimeout(() => {
                     toggleVipUI(true);
                     const vipCard = document.getElementById('vip-card-main');
                     vipCard.classList.add('auth-flash');
-                    setTimeout(() => document.getElementById('vip-members').classList.add('ready'), 400);
+                    
+                    setTimeout(() => {
+                        document.getElementById('vip-members').classList.add('ready');
+                    }, 400);
+
                     setTimeout(() => vipCard.classList.remove('auth-flash'), 700);
                 }, 300);
+
             } else {
                 tg.showAlert("ОШИБКА КЛЮЧА");
             }
@@ -361,45 +356,42 @@
             const sub = document.getElementById('vip-sub');
             const members = document.getElementById('vip-members');
             const auth = document.getElementById('vip-auth');
+            
             if(isVip) {
                 auth.classList.add('hidden');
                 members.classList.remove('hidden');
                 label.innerText = "ROOM ALL STAR";
                 sub.innerText = "VIP";
+                label.style.color = "#fff";
+                label.style.textShadow = "0 0 10px #fff";
             } else {
                 auth.classList.remove('hidden');
                 members.classList.add('hidden');
+                members.classList.remove('ready');
                 label.innerText = "VIP";
                 sub.innerText = "ДЛЯ КЛАНА";
-            }
-        }
-
-        function checkAuth() {
-            const expiry = localStorage.getItem('clan_auth_expiry');
-            const now = new Date().getTime();
-            if (expiry) {
-                if (now < parseInt(expiry)) {
-                    toggleVipUI(true);
-                    document.getElementById('vip-members').classList.add('ready');
-                } else {
-                    localStorage.removeItem('clan_auth_expiry');
-                    toggleVipUI(false);
-                }
+                label.style.color = "#ffd700";
+                label.style.textShadow = "none";
             }
         }
 
         function exitVip() {
-            localStorage.removeItem('clan_auth_expiry');
+            localStorage.removeItem('clan_auth');
             location.reload();
         }
 
-        function openContact() { tg.openTelegramLink("https://t.me/BAW_SAD"); }
+        function openContact() {
+            tg.openTelegramLink("https://t.me/BAW_SAD");
+        }
 
-        checkAuth();
-        setInterval(checkAuth, 2000);
+        if(localStorage.getItem('clan_auth')) {
+            toggleVipUI(true);
+            document.getElementById('vip-members').classList.add('ready');
+        }
     </script>
 </body>
 </html>
+
 
 
 
