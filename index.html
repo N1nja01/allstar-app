@@ -51,7 +51,7 @@
         input { 
             background: #151515; border: 1px solid #333; padding: 15px; color: #fff; 
             border-radius: 10px; font-family: 'Orbitron'; width: 100%; box-sizing: border-box; 
-            margin-bottom: 10px; text-align: center; outline: none; border: 1px solid #222;
+            margin-bottom: 10px; text-align: center; outline: none;
         }
 
         .action-btn { 
@@ -191,32 +191,15 @@
                 </div>
 
                 <div id="vip-rules-sub" class="hidden vip-sub-screen">
-                    <div class="vip-section-title">ЗА ЧТО МОГУТ ИСКЛЮЧИТЬ</div>
-                    <div class="vip-content-block">
-                        <div class="rules-container" id="rules-scroll">
+                    <div class="rules-container" id="rules-scroll">
+                        <div class="vip-section-title">ЗА ЧТО МОГУТ ИСКЛЮЧИТЬ</div>
+                        <div class="vip-content-block">
                             <p style="font-size: 0.65rem; color: #ff0000; margin-top: 0;">ФОРМАТ: "НПК" (Нарушение правил клана)</p>
-                            
-                            <div class="rule-item"><span class="rule-num">1.</span> Оск/Оск род: Запрещены любые оскорбления игроков, нации и семьи. Шутки про детдом неуместны.</div>
-                            <div class="rule-item"><span class="rule-num">2.</span> Лич. Инфа: Запрещено распространять ФИО/фото/номер/адрес и соц. сети участников.</div>
-                            <div class="rule-item"><span class="rule-num">3.</span> ЗП: Запрещена пропаганда нацизма, наркотиков, алкоголя, порнографии и вредоносных ссылок.</div>
-                            <div class="rule-item"><span class="rule-num">4.</span> Попрошай: Запрещено попрошайничество. (Донат можно просить 1 раз в неделю в чате).</div>
-                            <div class="rule-item"><span class="rule-num">5.</span> Провокатор: Запрещено провоцировать нарушение правил.</div>
-                            <div class="rule-item"><span class="rule-num">6.</span> Глав/зам: Запрещено выдавать себя за руководство, разрабов или админов.</div>
-                            <div class="rule-item"><span class="rule-num">7.</span> Неадекват: Запрещены угрозы, хамство, взятки, вымогательство и шантаж.</div>
-                            <div class="rule-item"><span class="rule-num">8.</span> Агент/Предатель: Слив инфы или работа на другой клан.</div>
-                            <div class="rule-item"><span class="rule-num">9.</span> Админка: Запрещено выпрашивать админку в чатах или манипулировать админами.</div>
-                            <div class="rule-item"><span class="rule-num">10.</span> Враги: Запрещено держать в друзьях врагов клана (на усмотрение управления).</div>
-                            <div class="rule-item"><span class="rule-num">11.</span> Мошенничество: Кража акков, создание фейковых пруфов и чатов.</div>
-                            <div class="rule-item"><span class="rule-num">12.</span> Вредительство: Захват или снос чужих чатов, полученных через админку.</div>
-                            <div class="rule-item"><span class="rule-num">13.</span> Пассив: Запрещено бегать в пассивке.</div>
-                            <div class="rule-item"><span class="rule-num">14.</span> Твины: Твины не состоят в клане. Подтверждение только лично Главам. Остальные — нн.</div>
-                            <div class="rule-item"><span class="rule-num">15.</span> Слив сообщений: Запрещено выносить инфу из клановых и союзных чатов.</div>
-                            <div class="rule-item"><span class="rule-num">16.</span> Обновы: Распространение сливов обновления (на усмотрение управления).</div>
-                            <div class="rule-item"><span class="rule-num">17.</span> Тренировки: Запрещено убийство с ножей/леденцов/катан. Стримы и видео запрещены.</div>
-                            
-                            <p style="font-size: 0.7rem; border-top: 1px solid #444; padding-top: 10px;">
-                                <span style="color:#ffd700;">ВАЖНО:</span> При получении доказательств — исключение БЕЗ ПРАВА ВЕРНУТЬСЯ. Прочтено — значит ознакомлен.
-                            </p>
+                            <div class="rule-item"><span class="rule-num">1.</span> Оск/Оск род: Запрещены оскорбления нации и семьи.</div>
+                            <div class="rule-item"><span class="rule-num">2.</span> Лич. Инфа: Запрещен деанон участников.</div>
+                            <div class="rule-item"><span class="rule-num">3.</span> ЗП: Запрещена пропаганда нацизма и вредных в-в.</div>
+                            <div class="rule-item"><span class="rule-num">8.</span> Предатель: Слив инфы врагам клана.</div>
+                            <p style="font-size: 0.7rem; border-top: 1px solid #444; padding-top: 10px; color:#ffd700;">Прочтено — ознакомлен.</p>
                         </div>
                     </div>
                     <button class="action-btn" style="background:#333; font-size:0.7rem;" onclick="closeVipSub()">Назад к меню</button>
@@ -236,7 +219,18 @@
 
         let currentActiveSub = null;
 
+        // Функция проверки срока действия
+        function checkExpiry() {
+            const expiry = localStorage.getItem('clan_auth_expiry');
+            if (expiry && expiry !== 'never') {
+                if (Date.now() > parseInt(expiry)) {
+                    exitVip();
+                }
+            }
+        }
+
         function showScreen(screenId) {
+            checkExpiry();
             tg.HapticFeedback.impactOccurred('light');
             const current = document.querySelector('.screen.active');
             const next = document.getElementById(screenId);
@@ -250,7 +244,6 @@
             setTimeout(() => {
                 if (current) current.classList.remove('active');
                 next.classList.add('active');
-                
                 setTimeout(() => {
                     next.style.opacity = "1";
                     next.style.transform = "translateY(0)";
@@ -267,11 +260,8 @@
         }
 
         function goBack() {
-            if (currentActiveSub) {
-                closeVipSub();
-            } else {
-                showScreen('main-menu');
-            }
+            if (currentActiveSub) closeVipSub();
+            else showScreen('main-menu');
         }
 
         tg.BackButton.onClick(goBack);
@@ -280,14 +270,9 @@
             tg.HapticFeedback.impactOccurred('medium');
             const nav = document.getElementById('vip-main-nav');
             const sub = document.getElementById(subId);
-
             nav.classList.add('hidden');
             sub.classList.remove('hidden');
-            
-            setTimeout(() => {
-                sub.classList.add('fade-in');
-            }, 10);
-            
+            setTimeout(() => sub.classList.add('fade-in'), 10);
             currentActiveSub = subId;
         }
 
@@ -296,7 +281,6 @@
                 const sub = document.getElementById(currentActiveSub);
                 const nav = document.getElementById('vip-main-nav');
                 sub.classList.remove('fade-in');
-
                 setTimeout(() => {
                     sub.classList.add('hidden');
                     nav.classList.remove('hidden');
@@ -310,11 +294,9 @@
             const res = document.getElementById('check-res');
             const loader = document.getElementById('loader');
             const btn = document.getElementById('checkBtn');
-
             if(!val) return;
             res.innerHTML = ""; btn.style.display = "none"; loader.style.display = "block";
             tg.HapticFeedback.impactOccurred('medium');
-
             setTimeout(() => {
                 loader.style.display = "none"; btn.style.display = "block";
                 if(blackListData.includes(Number(val))) {
@@ -328,26 +310,30 @@
         }
 
         function tryVip() {
-            const key = document.getElementById('vipKey').value.trim().toUpperCase();
-            if(key === 'ADMIN' || key === 'VIP777') {
+            const key = document.getElementById('vipKey').value.trim();
+            let expiryTime = null;
+
+            // Логика новых ключей
+            if (key === 'JustN1nja0506') {
+                expiryTime = 'never';
+            } else if (key === 'AS-9921-XQ') {
+                expiryTime = Date.now() + (60 * 60 * 1000); // 1 час
+            }
+
+            if (expiryTime) {
                 tg.HapticFeedback.notificationOccurred('success');
                 localStorage.setItem('clan_auth', 'true');
+                localStorage.setItem('clan_auth_expiry', expiryTime);
+                
                 showScreen('main-menu');
-
                 setTimeout(() => {
                     toggleVipUI(true);
                     const vipCard = document.getElementById('vip-card-main');
                     vipCard.classList.add('auth-flash');
-                    
-                    setTimeout(() => {
-                        document.getElementById('vip-members').classList.add('ready');
-                    }, 400);
-
-                    setTimeout(() => vipCard.classList.remove('auth-flash'), 700);
+                    setTimeout(() => document.getElementById('vip-members').classList.add('ready'), 400);
                 }, 300);
-
             } else {
-                tg.showAlert("ОШИБКА КЛЮЧА");
+                tg.showAlert("ОШИБКА: НЕВЕРНЫЙ КЛЮЧ");
             }
         }
 
@@ -367,7 +353,6 @@
             } else {
                 auth.classList.remove('hidden');
                 members.classList.add('hidden');
-                members.classList.remove('ready');
                 label.innerText = "VIP";
                 sub.innerText = "ДЛЯ КЛАНА";
                 label.style.color = "#ffd700";
@@ -377,6 +362,7 @@
 
         function exitVip() {
             localStorage.removeItem('clan_auth');
+            localStorage.removeItem('clan_auth_expiry');
             location.reload();
         }
 
@@ -384,6 +370,8 @@
             tg.openTelegramLink("https://t.me/BAW_SAD");
         }
 
+        // Проверка при загрузке
+        checkExpiry();
         if(localStorage.getItem('clan_auth')) {
             toggleVipUI(true);
             document.getElementById('vip-members').classList.add('ready');
@@ -391,6 +379,7 @@
     </script>
 </body>
 </html>
+
 
 
 
